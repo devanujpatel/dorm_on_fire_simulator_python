@@ -45,7 +45,13 @@ def save_to_dat_file():
         new_map_frame.destroy()
         print("saving")
         with open(f"{name}.dat", 'wb') as file:
-            pickle.dump(all_tiles_list, file)
+            pickle.dump({"list": all_tiles_list, "dictionary": all_tiles}, file)
+        container.destroy()
+        f = open("temp_for_file_name.txt", "w")
+        print(name + ".dat")
+        f.write(name + ".dat")
+        f.close()
+        import reading_building_plan
 
     e.pack()
     submitButton = Button(new_map_frame, text="Submit", padx=5, pady=5, command=enterName)
