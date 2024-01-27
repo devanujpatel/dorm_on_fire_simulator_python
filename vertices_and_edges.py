@@ -7,7 +7,6 @@ class VerticesAndEdges:
 
     def work(self):
         for tile in self.all_tiles_list:
-
             self.tile_to_neighbouring_tiles[tile] = []
             self.tile_to_neighbouring_tiles_costs[tile] = {}
             x = tile.x

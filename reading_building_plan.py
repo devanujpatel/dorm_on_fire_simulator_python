@@ -59,13 +59,13 @@ def on_click(event):
     if radio_selection == "human":
         all_tiles_dict[x_coord][y_coord].increment_population()
         my_canvas.create_oval(x - 2, y - 2, x + 2, y + 2, fill="black", outline="black")
+
     else:
         try:
             all_tiles_dict[x_coord][y_coord].set_on_fire()
             my_canvas.create_oval(x - 5, y - 5, x + 5, y + 5, fill="OrangeRed2", outline="OrangeRed2")
         except:
             pass
-
 
 root.bind("<Button-1>", on_click)
 
