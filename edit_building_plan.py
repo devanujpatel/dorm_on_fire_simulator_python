@@ -1,6 +1,7 @@
 import threading
 import time
 from tkinter import *
+import pickle
 from tkinter import simpledialog, messagebox
 
 # from GUI_Tile import GUI_Tile
@@ -12,6 +13,7 @@ from Tiles import Tile
 divisions = 100
 
 all_tiles = {}
+all_tiles_list = []
 all_rectangles = []
 big_rectangle_id = 0
 
@@ -112,12 +114,17 @@ def further_process(big_left_top_x, big_left_top_y, big_right_bottom_x, big_righ
             all_tiles[x_coord][y_coord] = Tile(x_coord, y_coord, tempWalkable, tempFlammable, False, False,
                                                tempColor,
                                                big_rectangle_id)
-
+            all_tiles_list.append(Tile(x_coord, y_coord, tempWalkable, tempFlammable, False, False,
+                                               tempColor,
+                                               big_rectangle_id))
     big_rectangle_id += 1
     rect_start_x = None
     rect_start_y = None
     rect_id = None
     print("done")
+    print(all_tiles_list)
+    with open("dummy.dat", 'wb') as file:
+        pickle.dump(all_tiles_list, file)
 
 
 def ask_the_three_questions(big_left_top_x, big_left_top_y, big_right_bottom_x, big_right_bottom_y, width_of_tile,
@@ -170,7 +177,6 @@ def ask_the_three_questions(big_left_top_x, big_left_top_y, big_right_bottom_x, 
         window.destroy()
         further_process(big_left_top_x, big_left_top_y, big_right_bottom_x, big_right_bottom_y, width_of_tile,
                         height_of_tile)
-
 
     # Create an "OK" button
     button = Button(window, text="OK", command=on_button_click)
