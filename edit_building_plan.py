@@ -1,7 +1,9 @@
 from tkinter import *
 from GUI_Tile import GUI_Tile
+from Rectangle import Rectangle
 
 all_tiles = {}
+all_rectangles = []
 
 container = Tk()
 
@@ -64,8 +66,8 @@ def on_release(event):
     selected_region_start = (rect_start_x, rect_start_y)
     selected_region_end = (rect_end_x, rect_end_y)
 
-    print("Selected Region Start:", selected_region_start)
-    print("Selected Region End:", selected_region_end)
+    # print("Selected Region Start:", selected_region_start)
+    # print("Selected Region End:", selected_region_end)
 
     left_top_x = selected_region_start[0]
     left_top_y = selected_region_start[1]
@@ -77,10 +79,10 @@ def on_release(event):
                                                                                              right_bottom_x,
                                                                                              right_bottom_y)
 
-    print(left_top_x, left_top_y)
-    print(right_top_x, right_top_y)
-    print(left_bottom_x, left_bottom_y)
-    print(right_bottom_x, right_bottom_y)
+    # print(left_top_x, left_top_y)
+    # print(right_top_x, right_top_y)
+    # print(left_bottom_x, left_bottom_y)
+    # print(right_bottom_x, right_bottom_y)
 
     x = left_top_x
     y = left_top_y
@@ -101,13 +103,49 @@ def on_release(event):
         big_right_bottom_x,
         big_right_bottom_y)
 
-    print(big_left_top_x, big_left_top_y)
-    print(big_right_top_x, big_right_top_y)
-    print(big_left_bottom_x, big_left_bottom_y)
-    print(big_right_bottom_x, big_right_bottom_y)
+    # print(big_left_top_x, big_left_top_y)
+    # print(big_right_top_x, big_right_top_y)
+    # print(big_left_bottom_x, big_left_bottom_y)
+    # print(big_right_bottom_x, big_right_bottom_y)
 
-    my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
-                               big_right_bottom_y, fill="blue")
+    new_rectangle = Rectangle(big_left_top_x, big_left_top_y, big_right_top_x, big_right_top_y, big_left_bottom_x,
+                              big_left_bottom_y, big_right_bottom_x, big_right_bottom_y)
+
+    if len(all_rectangles) == 0:
+        all_rectangles.append(new_rectangle)
+        my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
+                                   big_right_bottom_y, fill="blue")
+    else:
+        flag = True
+        for rectangle in all_rectangles:
+            if rectangles_overlap(rectangle.get_coords(), new_rectangle.get_coords()):
+                pass
+                # let the user know about the overlap
+                print("invalid")
+                flag = False
+                break
+
+            else:
+                print("valid")
+        if flag:
+            all_rectangles.append(new_rectangle)
+            my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
+                                       big_right_bottom_y, fill="blue")
+
+
+def rectangles_overlap(rect1, rect2):
+    # Rectangles are represented as (x1, y1, x2, y2), where (x1, y1) is the top-left corner,
+    # and (x2, y2) is the bottom-right corner.
+    print(rect1)
+    print(rect2)
+    x1_rect1, y1_rect1, x2_rect1, y2_rect1 = rect1
+    x1_rect2, y1_rect2, x2_rect2, y2_rect2 = rect2
+
+    # Check for non-overlapping conditions
+    if x2_rect1 < x1_rect2 or x2_rect2 < x1_rect1 or y2_rect1 < y1_rect2 or y2_rect2 < y1_rect1:
+        return False
+    else:
+        return True
 
 
 def calculate_rt_and_lb_coordinates(x1, y1, x2, y2):
