@@ -29,7 +29,7 @@ def save_to_dat_file():
     container.unbind("<ButtonPress-1>")
     container.unbind("<B1-Motion>")
     container.unbind("<ButtonRelease-1>")
-
+    saveMessage.destroy()
     my_canvas.destroy()
     new_map_frame = Frame(container, height=container.winfo_height() - 10, width=container.winfo_screenheight() - 10)
     new_map_frame.pack()
@@ -54,10 +54,14 @@ def save_to_dat_file():
 
 # submit_button = Button(container, text="Submit plan", command=save_to_dat_file)
 # submit_button.pack()
-container.bind('<Control-s>', lambda event: save_to_dat_file())
+try:
+    container.bind('<Control-s>', lambda event: save_to_dat_file())
+    container.bind('<Command-s>', lambda event: save_to_dat_file())
+except:
+    pass
 
 my_canvas = Canvas(container, width=width, height=height)
-my_canvas.pack(pady=20)
+my_canvas.grid(row = 1, column = 0) #pack(pady=20))
 
 rect_start_x = None
 rect_start_y = None
@@ -71,6 +75,9 @@ for i in range(divisions):
 # for x in range(divisions):
 #    for y in range(divisions):
 #        GUI_Tile(x, y, width, height, all_tiles)
+
+saveMessage = Label(container, text ="To Save: COMMAND + S (Mac) or CTRL + S", width = 50)
+saveMessage.grid(row = 0, column = 0)
 
 tempFlammable = False
 tempWalkable = False
@@ -174,7 +181,7 @@ def ask_the_three_questions(big_left_top_x, big_left_top_y, big_right_bottom_x, 
     walkable_var = StringVar(window)
     walkable_var.set("Yes")  # default value
     color_var = StringVar(window)
-    color_var.set("Grey")  # default value
+    color_var.set("dim grey")  # default value
 
     # Create a label and dropdown menu for each question
     flammable_label = Label(window, text="Are the tiles flammable?")
