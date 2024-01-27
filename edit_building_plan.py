@@ -1,9 +1,15 @@
+import threading
+import time
 from tkinter import *
-from GUI_Tile import GUI_Tile
+from tkinter import simpledialog, messagebox
+
+# from GUI_Tile import GUI_Tile
 from Rectangle import Rectangle
+from Tiles import Tile
 
 # from tkinter import messagebox, simpledialog
 
+divisions = 100
 
 all_tiles = {}
 all_rectangles = []
@@ -23,18 +29,84 @@ rect_start_x = None
 rect_start_y = None
 rect_id = None
 
-for i in range(100):
+for i in range(divisions):
     all_tiles[i] = {}
-    for j in range(100):
+    for j in range(divisions):
         all_tiles[i][j] = None
 
-for x in range(100):
-    for y in range(100):
-        GUI_Tile(x, y, width, height, all_tiles)
+# for x in range(divisions):
+#    for y in range(divisions):
+#        GUI_Tile(x, y, width, height, all_tiles)
 
 tempFlammable = False
 tempWalkable = False
+wait_for_response = False
 tempColor = None
+
+
+class thread(threading.Thread):
+    def __init__(self, thread_name, thread_ID, big_left_top_x, big_left_top_y, big_right_bottom_x, big_right_bottom_y,
+                 width_of_tile, height_of_tile):
+        threading.Thread.__init__(self)
+        self.thread_name = thread_name
+        self.thread_ID = thread_ID
+        self.big_left_top_x = big_left_top_x
+        self.big_left_top_y = big_left_top_y
+        self.big_right_bottom_x = big_right_bottom_x
+        self.big_right_bottom_y = big_right_bottom_y
+        self.width_of_tile = width_of_tile
+        self.height_of_tile = height_of_tile
+
+        # helper function to execute the threads
+
+    def run(self):
+        while True:
+            if tempColor is None:
+                pass
+            else:
+                print("breaking")
+
+            print("---")
+            print(tempColor)
+            print("---")
+
+            my_canvas.create_rectangle(self.big_left_top_x, self.big_left_top_y, self.big_right_bottom_x,
+                                       self.big_right_bottom_y, fill=tempColor)
+
+            # flammability, walkability, color = ask_the_three_questions()
+            starting_x = round(self.big_left_top_x / self.width_of_tile, 0)
+            starting_y = round(self.big_left_top_y / self.height_of_tile, 0)
+
+            print("---")
+            print(starting_x, starting_y)
+
+            ending_x = round(self.big_right_bottom_x / self.width_of_tile, 0)
+            ending_y = round(self.big_right_bottom_y / self.height_of_tile, 0)
+
+            print(ending_x, ending_y)
+
+            for x_coord in range(int(starting_x), int(ending_x) + 1):
+                for y_coord in range(int(starting_y), int(ending_y) + 1):
+                    all_tiles[x_coord][y_coord] = Tile(x_coord, y_coord, tempWalkable, tempFlammable, False, False,
+                                                       tempColor,
+                                                       big_rectangle_id)
+
+            big_rectangle_id += 1
+            print("done")
+
+
+def draw_grid_on_canvas(canvas, width, height, divisions):
+    cell_width = width / divisions
+    cell_height = height / divisions
+
+    for i in range(1, divisions):
+        x = i * cell_width
+        canvas.create_line(x, 0, x, height, fill="gray", dash=(2, 2))
+
+    for i in range(1, divisions):
+        y = i * cell_height
+        canvas.create_line(0, y, width, y, fill="gray", dash=(2, 2))
+draw_grid_on_canvas(my_canvas, width, height, divisions)
 
 def ask_the_three_questions():
     # Create a new top-level window
@@ -75,19 +147,19 @@ def ask_the_three_questions():
 
     # Create a function to be called when the button is clicked
     def on_button_click():
+        global tempFlammable, tempWalkable, tempColor
         print("Selected options:", flammable_var.get(), walkable_var.get(), color_var.get())
-        if flammable_var.get() == "Yes":
-            tempFlammable = True
-        if walkable_var.get() == "Yes":
-            tempWalkwable = True
+        tempFlammable = flammable_var.get()
+        tempWalkable = walkable_var.get()
         tempColor = color_var.get()
         window.destroy()
 
     # Create an "OK" button
     button = Button(window, text="OK", command=on_button_click)
     button.pack()
-    draw_grid_on_canvas(my_canvas, width, height, 100)
+    #draw_grid_on_canvas(my_canvas, width, height, divisions)
     window.mainloop()
+
 
 def on_press(event):
     global rect_start_x, rect_start_y, rect_id
@@ -107,18 +179,6 @@ def on_press(event):
         tags="rect",
     )
 
-def draw_grid_on_canvas(canvas, width, height, divisions):
-    cell_width = width / divisions
-    cell_height = height / divisions
-
-    for i in range(1, divisions):
-        x = i * cell_width
-        canvas.create_line(x, 0, x, height, fill="gray", dash=(2, 2))
-
-    for i in range(1, divisions):
-        y = i * cell_height
-        canvas.create_line(0, y, width, y, fill="gray", dash=(2, 2))
-    canvas.focus_set()
 
 def on_drag(event):
     cur_x = my_canvas.canvasx(event.x)
@@ -129,7 +189,7 @@ def on_drag(event):
 
 
 def on_release(event):
-    global rect_start_x, rect_start_y
+    global rect_start_x, rect_start_y, big_rectangle_id
     # Get the coordinates of the selected region
     rect_end_x = my_canvas.canvasx(event.x)
     rect_end_y = my_canvas.canvasy(event.y)
@@ -158,8 +218,8 @@ def on_release(event):
 
     x = left_top_x
     y = left_top_y
-    width_of_tile = width / 100
-    height_of_tile = height / 100
+    width_of_tile = width / divisions
+    height_of_tile = height / divisions
 
     big_left_top_x = (x // width_of_tile) * width_of_tile
     big_left_top_y = (y // height_of_tile) * height_of_tile
@@ -175,20 +235,23 @@ def on_release(event):
         big_right_bottom_x,
         big_right_bottom_y)
 
-    # print(big_left_top_x, big_left_top_y)
-    # print(big_right_top_x, big_right_top_y)
-    # print(big_left_bottom_x, big_left_bottom_y)
-    # print(big_right_bottom_x, big_right_bottom_y)
+    print(big_left_top_x, big_left_top_y)
+    print(big_right_top_x, big_right_top_y)
+    print(big_left_bottom_x, big_left_bottom_y)
+    print(big_right_bottom_x, big_right_bottom_y)
 
     new_rectangle = Rectangle(big_left_top_x, big_left_top_y, big_right_top_x, big_right_top_y, big_left_bottom_x,
                               big_left_bottom_y, big_right_bottom_x, big_right_bottom_y)
 
+    flag = True
+
     if len(all_rectangles) == 0:
-        all_rectangles.append(new_rectangle)
-        my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
-                                   big_right_bottom_y, fill="blue")
+        pass
+        # all_rectangles.append(new_rectangle)
+        # my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
+        #                            big_right_bottom_y, fill="blue")
+        # ask_if_flammable()
     else:
-        flag = True
         for rectangle in all_rectangles:
             if rectangles_overlap(rectangle.get_coords(), new_rectangle.get_coords()):
                 pass
@@ -196,15 +259,18 @@ def on_release(event):
                 print("invalid")
                 flag = False
                 break
-
             else:
                 print("valid")
-        if flag:
-            all_rectangles.append(new_rectangle)
-            my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
-                                       big_right_bottom_y, fill="blue")
+    if flag:
+        all_rectangles.append(new_rectangle)
+        my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
+                                   big_right_bottom_y, fill="blue")
 
-    ask_the_three_questions()
+        ask_the_three_questions()
+        # big_left_top_x, big_left_top_y, big_right_bottom_x, big_right_bottom_y, width_of_tile, height_of_tile):
+        thread1 = thread("name", 1, big_left_top_x, big_left_top_y, big_right_bottom_x, big_right_bottom_y,
+                         width_of_tile, height_of_tile)
+        thread1.start()
 
     # tempFlammable = None
     # tempWalkable = None
