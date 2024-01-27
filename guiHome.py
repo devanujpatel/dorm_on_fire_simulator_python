@@ -28,25 +28,6 @@ def myClick():
 
 def newMap():
     root.destroy()
-    from edit_building_plan import container
-
-
-    #newMapFrame = Frame(root, height=rootHeight - 10, width=rootWidth - 10)
-    #newMapFrame.pack()
-    #nameLabel = Label(newMapFrame, text="Enter Name of Map: ")
-    #nameLabel.pack()
-    #e = Entry(newMapFrame, width=50, bg="white")
-    #e.focus_set()
-
-    #def enterName():
-    #    tempName = e.get()
-    #    print(tempName)
-    #    root.destroy()
-    #    from edit_building_plan import container
-
-    #e.pack()
-    #submitButton = Button(newMapFrame, text="Submit", padx=5, pady=5, command=enterName)
-    #submitButton.pack()
 
 
 def preloaded():
