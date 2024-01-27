@@ -36,9 +36,11 @@ tempFlammable = False
 tempWalkable = False
 tempColor = None
 
+
 def ask_the_three_questions():
     pass
     # return a tuple: (flammability (True or False), walkability (True or False), color (a string)
+
 
 # consolidate the following three functions into the above one
 def ask_if_flammable():
@@ -230,12 +232,15 @@ def on_release(event):
     new_rectangle = Rectangle(big_left_top_x, big_left_top_y, big_right_top_x, big_right_top_y, big_left_bottom_x,
                               big_left_bottom_y, big_right_bottom_x, big_right_bottom_y)
 
+    flag = True
+
     if len(all_rectangles) == 0:
-        all_rectangles.append(new_rectangle)
-        my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
-                                   big_right_bottom_y, fill="blue")
+        pass
+        # all_rectangles.append(new_rectangle)
+        # my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
+        #                            big_right_bottom_y, fill="blue")
+        # ask_if_flammable()
     else:
-        flag = True
         for rectangle in all_rectangles:
             if rectangles_overlap(rectangle.get_coords(), new_rectangle.get_coords()):
                 pass
@@ -243,15 +248,28 @@ def on_release(event):
                 print("invalid")
                 flag = False
                 break
-
             else:
                 print("valid")
-        if flag:
-            all_rectangles.append(new_rectangle)
-            my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
-                                       big_right_bottom_y, fill="blue")
+    if flag:
+        all_rectangles.append(new_rectangle)
+        my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
+                                   big_right_bottom_y, fill="blue")
 
-            flammability, walkability, color = ask_the_three_questions()
+        flammability = tempFlammable
+        walkability = tempWalkable
+        color = tempColor
+        # flammability, walkability, color = ask_the_three_questions()
+
+        # identify coordinates
+        starting_x = big_left_top_x // 100
+        starting_y = big_left_top_y // 100
+
+        print(starting_x, starting_y)
+
+        ending_x = (big_right_top_x - big_left_top_x)/100 + starting_x
+        ending_y = (big_right_top_y - big_left_top_y) / 100 + starting_y
+
+        print(ending_x, ending_y)
 
     # tempFlammable = None
     # tempWalkable = None
