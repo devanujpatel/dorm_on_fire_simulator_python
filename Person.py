@@ -5,14 +5,23 @@ class Person:
         self.name = name
         self.location = None
         self.status = "Inside"
-        self.health_status = "Healthy"
+        self.health_status = 100
         self.evacuation_status = False
-        self.personal_traits = personal_traits or {}
-        self.language = language
-        self.cultural_background = cultural_background
-        self.mobile_phone_dependence = random.choice([True, False])
         self.position = position
         self.blocked_exits = []
+
+    def makeNextMove():
+        try:
+            # Get the current working directory
+            current_directory = os.getcwd()
+
+            dat_files = glob.glob(os.path.join(current_directory, '*.dat'))
+            dat_file_names = [os.path.basename(file) for file in dat_files]
+            print(dat_file_names)
+            var_options = dat_file_names
+        except Exception as e:
+            print(f"Error: {e}")
+        allPossibilities = vertices_and_edges()
 
     def enter_building(self, entry_point):
         self.location = entry_point
