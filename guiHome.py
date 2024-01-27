@@ -54,6 +54,8 @@ def preloaded():
     existingPlansFrame = Frame(root, height=rootHeight - 10, width=rootWidth - 10)
     existingPlansFrame.pack()
     root.destroy()
+    from preexistingMaps import container
+
     # drop = ttk.Combobox(existingPlansFrame, value = "     ", "      ")
     # drop.current(0)
 

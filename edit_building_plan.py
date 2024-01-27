@@ -29,7 +29,7 @@ def save_to_dat_file():
     container.unbind("<ButtonPress-1>")
     container.unbind("<B1-Motion>")
     container.unbind("<ButtonRelease-1>")
-
+    saveMessage.destroy()
     my_canvas.destroy()
     new_map_frame = Frame(container, height=container.winfo_height() - 10, width=container.winfo_screenheight() - 10)
     new_map_frame.pack()
