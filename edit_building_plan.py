@@ -54,7 +54,11 @@ def save_to_dat_file():
 
 # submit_button = Button(container, text="Submit plan", command=save_to_dat_file)
 # submit_button.pack()
-container.bind('<Control-s>', lambda event: save_to_dat_file())
+try:
+    container.bind('<Control-s>', lambda event: save_to_dat_file())
+    container.bind('<Command-s>', lambda event: save_to_dat_file())
+except:
+    pass
 
 my_canvas = Canvas(container, width=width, height=height)
 my_canvas.grid(row = 1, column = 0) #pack(pady=20))
