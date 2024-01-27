@@ -24,17 +24,22 @@ class Person:
         data_set = VerticesAndEdges(all_tiles_list, all_tiles_dict)
         lowest_cost_neighbour = None
         person_tile = all_tiles_dict[self.x][self.y]
-        lowest_cost = 1000
+        lowest_cost = 10000
         for neighbour in data_set[all_tiles_dict[self.x][self.y]]:
             if lowest_cost_neighbour is None:
                 lowest_cost_neighbour = neighbour
-
+            elif neighbour.color == "maroon":
+                lowest_cost = data_set.tile_to_neighbouring_tiles_costs[all_tiles_dict[self.x][self.y]][neighbour]
+                lowest_cost_neighbour = all_tiles_dict[self.x][self.y]
+                self.destroy()
+                break; 
             elif data_set.tile_to_neighbouring_tiles_costs[person_tile][neighbour] < lowest_cost:
                 lowest_cost = data_set.tile_to_neighbouring_tiles_costs[all_tiles_dict[self.x][self.y]][neighbour]
                 lowest_cost_neighbour = all_tiles_dict[self.x][self.y]
 
         self.x = lowest_cost_neighbour.x
         self.y = lowest_cost_neighbour.y
+        makeNextMove(self)
 
 
 
