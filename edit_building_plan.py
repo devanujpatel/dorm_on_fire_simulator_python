@@ -1,5 +1,5 @@
 from tkinter import *
-from GUI_Tile import GUI_Tile
+# from GUI_Tile import GUI_Tile
 from Rectangle import Rectangle
 from Tiles import Tile
 
@@ -30,9 +30,9 @@ for i in range(divisions):
     for j in range(divisions):
         all_tiles[i][j] = None
 
-for x in range(divisions):
-    for y in range(divisions):
-        GUI_Tile(x, y, width, height, all_tiles)
+# for x in range(divisions):
+#    for y in range(divisions):
+#        GUI_Tile(x, y, width, height, all_tiles)
 
 tempFlammable = False
 tempWalkable = False
