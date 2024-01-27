@@ -1,6 +1,7 @@
 from tkinter import *
 from GUI_Tile import GUI_Tile
 from Rectangle import Rectangle
+from tkinter import messagebox, simpledialog
 
 
 all_tiles = {}
@@ -29,16 +30,25 @@ for x in range(100):
     for y in range(100):
         GUI_Tile(x, y, width, height, all_tiles)
 
+tempFlammable = False
+tempWalkable = False
+tempColor = None
+
 def ask_if_flammable():
     # Create a new top-level window
-    window = Toplevel()
+    padConstant = 30
+    window = Toplevel(padx = padConstant, pady = padConstant)
+    window.title("")
+    positionstr = "+" + '{:.0f}'.format((width/2 - padConstant*3)) + "+" + '{:.0f}'.format((height/2 - padConstant*3))
+    print(positionstr)
+    window.geometry(positionstr)
 
     # Create a StringVar to hold the selected option
     var = StringVar(window)
     var.set("Yes")  # default value
 
     # Create a label
-    label = Label(window, text="Tile flammable?")
+    label = Label(window, text="Are the tiles flammable?")
     label.pack()
 
     # Create a dropdown menu
@@ -49,13 +59,81 @@ def ask_if_flammable():
     # Create a function to be called when the button is clicked
     def on_button_click():
         print("Selected option:", var.get())
+        if var.get() == "True":
+            tempFlammable = True
+        ask_if_walkable()
         window.destroy()
 
     # Create an "OK" button
     button = Button(window, text="OK", command=on_button_click)
     button.pack()
 
+def ask_if_walkable():
+    # Create a new top-level window
+    padConstant = 30
+    window = Toplevel(padx = padConstant, pady = padConstant)
+    window.title("")
+    positionstr = "+" + '{:.0f}'.format((width/2 - padConstant*3)) + "+" + '{:.0f}'.format((height/2 - padConstant*3))
+    print(positionstr)
+    window.geometry(positionstr)
 
+    # Create a StringVar to hold the selected option
+    var = StringVar(window)
+    var.set("Yes")  # default value
+
+    # Create a label
+    label = Label(window, text="Are the tiles walkable?")
+    label.pack()
+
+    # Create a dropdown menu
+    options = ["Yes", "No"]
+    dropdown = OptionMenu(window, var, *options)
+    dropdown.pack()
+
+    # Create a function to be called when the button is clicked
+    def on_button_click():
+        if var.get() == "True":
+            tempWalkable = True
+        print("Selected option:", var.get())
+        ask_color()
+        window.destroy()
+
+    # Create an "OK" button
+    button = Button(window, text="OK", command=on_button_click)
+    button.pack()
+
+def ask_color():
+    # Create a new top-level window
+    padConstant = 30
+    window = Toplevel(padx = padConstant, pady = padConstant)
+    window.title("")
+    positionstr = "+" + '{:.0f}'.format((width/2 - padConstant*3)) + "+" + '{:.0f}'.format((height/2 - padConstant*3))
+    print(positionstr)
+    window.geometry(positionstr)
+
+    # Create a StringVar to hold the selected option
+    var = StringVar(window)
+    var.set("Grey")  # default value
+
+    # Create a label
+    label = Label(window, text="Select area color: ")
+    label.pack()
+
+    # Create a dropdown menu
+    options = ["Grey", "Blue", "Green", "Yellow", "Purple", "Black"]
+    dropdown = OptionMenu(window, var, *options)
+    dropdown.pack()
+
+    # Create a function to be called when the button is clicked
+    def on_button_click():
+        print("Selected option:", var.get())
+        tempColor = var.get()
+        print(tempColor)
+        window.destroy()
+
+    # Create an "OK" button
+    button = Button(window, text="OK", command=on_button_click)
+    button.pack()
 
 def on_press(event):
     global rect_start_x, rect_start_y, rect_id
@@ -161,6 +239,24 @@ def on_release(event):
                                        big_right_bottom_y, fill="blue")
 
     ask_if_flammable()
+
+    #tempFlammable = None
+    #tempWalkable = None
+    #def dialog(var):
+    #    root2 = Tk()
+    #    box = Frame(root2)
+    #    question = Label(box, text = "Is the material " +  var + "?")
+    #    def yes():
+    #        temp = True
+    #    def no():
+    #        temp = False
+
+    #    yButton = Button(box, text = "Yes", command = yes)
+    #    nButton = Button(box, text = "False", command = no)
+
+
+   #userInput = (simpledialog.askstring(title='Is material flammable', prompt = "Yes or No?"))
+
 
 
 def rectangles_overlap(rect1, rect2):
