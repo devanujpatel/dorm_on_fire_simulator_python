@@ -76,11 +76,18 @@ def ask_the_three_questions():
     # Create a function to be called when the button is clicked
     def on_button_click():
         print("Selected options:", flammable_var.get(), walkable_var.get(), color_var.get())
+        if flammable_var.get() == "Yes":
+            tempFlammable = True
+        if walkable_var.get() == "Yes":
+            tempWalkwable = True
+        tempColor = color_var.get()
         window.destroy()
 
     # Create an "OK" button
     button = Button(window, text="OK", command=on_button_click)
     button.pack()
+    draw_grid_on_canvas(my_canvas, width, height, 100)
+    window.mainloop()
 
 def on_press(event):
     global rect_start_x, rect_start_y, rect_id
@@ -100,6 +107,18 @@ def on_press(event):
         tags="rect",
     )
 
+def draw_grid_on_canvas(canvas, width, height, divisions):
+    cell_width = width / divisions
+    cell_height = height / divisions
+
+    for i in range(1, divisions):
+        x = i * cell_width
+        canvas.create_line(x, 0, x, height, fill="gray", dash=(2, 2))
+
+    for i in range(1, divisions):
+        y = i * cell_height
+        canvas.create_line(0, y, width, y, fill="gray", dash=(2, 2))
+    canvas.focus_set()
 
 def on_drag(event):
     cur_x = my_canvas.canvasx(event.x)
