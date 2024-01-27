@@ -11,7 +11,6 @@ from Tiles import Tile
 # from tkinter import messagebox, simpledialog
 
 divisions = 100
-
 all_tiles = {}
 all_tiles_list = []
 all_rectangles = []
@@ -23,6 +22,39 @@ container = Tk()
 width = container.winfo_screenwidth()  # width of screen
 height = container.winfo_screenheight()  # height of screen
 container.winfo_toplevel().geometry("%dx%d%+d%+d" % (width, height, 0, 0))
+
+
+def save_to_dat_file():
+    global container
+    container.unbind("<ButtonPress-1>")
+    container.unbind("<B1-Motion>")
+    container.unbind("<ButtonRelease-1>")
+
+    my_canvas.destroy()
+    new_map_frame = Frame(container, height=container.winfo_height() - 10, width=container.winfo_screenheight() - 10)
+    new_map_frame.pack()
+    name_label = Label(new_map_frame, text="Enter Name of Map: ")
+    name_label.pack()
+    e = Entry(new_map_frame, width=50, bg="white")
+    e.focus_set()
+
+    def enterName():
+        global container
+        name = e.get()
+        print(name)
+        new_map_frame.destroy()
+        print("saving")
+        with open(f"{name}.dat", 'wb') as file:
+            pickle.dump(all_tiles_list, file)
+
+    e.pack()
+    submitButton = Button(new_map_frame, text="Submit", padx=5, pady=5, command=enterName)
+    submitButton.pack()
+
+
+# submit_button = Button(container, text="Submit plan", command=save_to_dat_file)
+# submit_button.pack()
+container.bind('<Control-s>', lambda event: save_to_dat_file())
 
 my_canvas = Canvas(container, width=width, height=height)
 my_canvas.pack(pady=20)
@@ -115,16 +147,14 @@ def further_process(big_left_top_x, big_left_top_y, big_right_bottom_x, big_righ
                                                tempColor,
                                                big_rectangle_id)
             all_tiles_list.append(Tile(x_coord, y_coord, tempWalkable, tempFlammable, False, False,
-                                               tempColor,
-                                               big_rectangle_id))
+                                       tempColor,
+                                       big_rectangle_id))
     big_rectangle_id += 1
     rect_start_x = None
     rect_start_y = None
     rect_id = None
     print("done")
     print(all_tiles_list)
-    with open("dummy.dat", 'wb') as file:
-        pickle.dump(all_tiles_list, file)
 
 
 def ask_the_three_questions(big_left_top_x, big_left_top_y, big_right_bottom_x, big_right_bottom_y, width_of_tile,

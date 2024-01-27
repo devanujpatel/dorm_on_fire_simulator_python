@@ -12,40 +12,41 @@ rootWidth = root.winfo_width()
 frame = Frame(root, height=rootHeight - 10, width=rootWidth - 10)
 frame.pack()
 
-#all the frames stored
+# all the frames stored
 newMapFrame = None
 existingPlansFrame = None
 
-
-#temporary variables
+# temporary variables
 tempName = None
 e = None
 
+
 def myClick():
-    myLabel = Label(root, text = e.get())
+    myLabel = Label(root, text=e.get())
     myLabel.pack()
 
+
 def newMap():
-    frame.destroy()
-    newMapFrame = Frame(root, height=rootHeight - 10, width=rootWidth - 10)
-    newMapFrame.pack()
-    nameLabel = Label(newMapFrame, text="Enter Name of Map: ")
-    nameLabel.pack()
-    e = Entry(newMapFrame, width = 50, bg = "white")
-    e.focus_set()
-    def enterName():
-        tempName = e.get()
-        print(tempName)
-
-    e.pack()
-    submitButton = Button(newMapFrame, text = "Submit", padx = 5, pady = 5, command = enterName)
-    submitButton.pack()
+    root.destroy()
+    from edit_building_plan import container
 
 
+    #newMapFrame = Frame(root, height=rootHeight - 10, width=rootWidth - 10)
+    #newMapFrame.pack()
+    #nameLabel = Label(newMapFrame, text="Enter Name of Map: ")
+    #nameLabel.pack()
+    #e = Entry(newMapFrame, width=50, bg="white")
+    #e.focus_set()
 
+    #def enterName():
+    #    tempName = e.get()
+    #    print(tempName)
+    #    root.destroy()
+    #    from edit_building_plan import container
 
-
-
+    #e.pack()
+    #submitButton = Button(newMapFrame, text="Submit", padx=5, pady=5, command=enterName)
+    #submitButton.pack()
 
 
 def preloaded():
