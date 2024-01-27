@@ -1,27 +1,45 @@
 import heapq
-
+import pickle
+from vertices_and_edges import VerticesAndEdges
 class Person:
-    def __init__(self, name, personal_traits=None, position=(0,0)):
+    def __init__(self, name, personal_traits, x,y):
         self.name = name
-        self.location = None
+        self.x = x
+        self.y = y
         self.status = "Inside"
         self.health_status = 100
         self.evacuation_status = False
-        self.position = position
-        self.blocked_exits = []
 
-    def makeNextMove():
-        try:
-            # Get the current working directory
-            current_directory = os.getcwd()
+    def makeNextMove(self):
+        f = open("temp_for_file_name.txt", "r")
+        name = f.read()
+        print(name)
+        f.close()
 
-            dat_files = glob.glob(os.path.join(current_directory, '*.dat'))
-            dat_file_names = [os.path.basename(file) for file in dat_files]
-            print(dat_file_names)
-            var_options = dat_file_names
-        except Exception as e:
-            print(f"Error: {e}")
-        allPossibilities = vertices_and_edges()
+        with open(name, "rb") as file:
+            data = pickle.load(file)
+            all_tiles_list = data["list"]
+            all_tiles_dict = data["dictionary"]
+
+        data_set = VerticesAndEdges(all_tiles_list, all_tiles_dict)
+        lowest_cost_neighbour = None
+        person_tile = all_tiles_dict[self.x][self.y]
+        lowest_cost = 1000
+        for neighbour in data_set[all_tiles_dict[self.x][self.y]]:
+            if lowest_cost_neighbour is None:
+                lowest_cost_neighbour = neighbour
+
+            elif data_set.tile_to_neighbouring_tiles_costs[person_tile][neighbour] < lowest_cost:
+                lowest_cost = data_set.tile_to_neighbouring_tiles_costs[all_tiles_dict[self.x][self.y]][neighbour]
+                lowest_cost_neighbour = all_tiles_dict[self.x][self.y]
+
+        self.x = lowest_cost_neighbour.x
+        self.y = lowest_cost_neighbour.y
+
+
+
+
+
 
     def enter_building(self, entry_point):
         self.location = entry_point
