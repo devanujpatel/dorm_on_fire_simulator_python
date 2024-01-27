@@ -1,11 +1,13 @@
 class Tile:
-    def __init__(self, x, y, walkable, flammable, is_on_fire, has_human):
+    def __init__(self, x, y, walkable, flammable, is_on_fire, has_human, color, id):
         self.x = x
         self.y = y
         self.walkable = walkable
         self.flammable = flammable
         self.is_on_fire = is_on_fire
+        self.color = color
         self.has_human = has_human
+        self.id = id
 
     def is_walkable(self):
         return self.walkable
