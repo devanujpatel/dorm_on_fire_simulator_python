@@ -1,5 +1,4 @@
 from tkinter import *
-
 from GUI_Tile import GUI_Tile
 
 all_tiles = {}
@@ -27,73 +26,94 @@ for x in range(100):
     for y in range(100):
         GUI_Tile(x, y, width, height, all_tiles)
 
-def on_click(event):
-    x = event.x
-    y = event.y
-    width_of_tile = width / 100
-    starting_x_rectangle = (x // width_of_tile) * width_of_tile
-    height_of_tile = height / 100
-    starting_y_rectangle = (y // height_of_tile) * height_of_tile
 
-    my_canvas.create_rectangle(starting_x_rectangle, starting_y_rectangle, starting_x_rectangle + width_of_tile,
-                               starting_y_rectangle + height_of_tile, fill="blue")
-    all_tiles[x // width_of_tile][y // height_of_tile].human_presence += 1
-
-
-
-def on_release(self, event):
-    # Get the coordinates of the selected region
-    rect_end_x = self.canvas.canvasx(event.x)
-    rect_end_y = self.canvas.canvasy(event.y)
-
-    # Perform actions based on the selected region
-    selected_region_start = (self.rect_start_x, self.rect_start_y)
-    selected_region_end = (rect_end_x, rect_end_y)
-
-    print("Selected Region Start:", selected_region_start)
-    print("Selected Region End:", selected_region_end)
-
-    # Perform additional actions based on the selected region
-    # For example, you can highlight or process the selected items within the region
-
-
-def on_press(self, event):
-    self.rect_start_x = self.canvas.canvasx(event.x)
-    self.rect_start_y = self.canvas.canvasy(event.y)
+def on_press(event):
+    global rect_start_x, rect_start_y, rect_id
+    rect_start_x = my_canvas.canvasx(event.x)
+    rect_start_y = my_canvas.canvasy(event.y)
 
     # Remove previous rectangles
-    self.canvas.delete("rect")
+    my_canvas.delete("rect")
 
     # Create a new rectangle
-    self.rect_id = self.canvas.create_rectangle(
-        self.rect_start_x,
-        self.rect_start_y,
-        self.rect_start_x,
-        self.rect_start_y,
+    rect_id = my_canvas.create_rectangle(
+        rect_start_x,
+        rect_start_y,
+        rect_start_x,
+        rect_start_y,
         outline="black",
         tags="rect",
     )
 
 
-def on_drag(self, event):
-    cur_x = self.canvas.canvasx(event.x)
-    cur_y = self.canvas.canvasy(event.y)
+def on_drag(event):
+    cur_x = my_canvas.canvasx(event.x)
+    cur_y = my_canvas.canvasy(event.y)
 
     # Update the rectangle size as the mouse is dragged
-    self.canvas.coords(self.rect_id, self.rect_start_x, self.rect_start_y, cur_x, cur_y)
+    my_canvas.coords(rect_id, rect_start_x, rect_start_y, cur_x, cur_y)
 
 
-def on_release(self, event):
+def on_release(event):
+    global rect_start_x, rect_start_y
     # Get the coordinates of the selected region
-    rect_end_x = self.canvas.canvasx(event.x)
-    rect_end_y = self.canvas.canvasy(event.y)
+    rect_end_x = my_canvas.canvasx(event.x)
+    rect_end_y = my_canvas.canvasy(event.y)
 
     # Perform actions based on the selected region
-    selected_region_start = (self.rect_start_x, self.rect_start_y)
+    selected_region_start = (rect_start_x, rect_start_y)
     selected_region_end = (rect_end_x, rect_end_y)
 
     print("Selected Region Start:", selected_region_start)
     print("Selected Region End:", selected_region_end)
+
+    left_top_x = selected_region_start[0]
+    left_top_y = selected_region_start[1]
+
+    right_bottom_x = selected_region_end[0]
+    right_bottom_y = selected_region_end[1]
+
+    right_top_x, right_top_y, left_bottom_x, left_bottom_y = calculate_rt_and_lb_coordinates(left_top_x, left_top_y,
+                                                                                             right_bottom_x,
+                                                                                             right_bottom_y)
+
+    print(left_top_x, left_top_y)
+    print(right_top_x, right_top_y)
+    print(left_bottom_x, left_bottom_y)
+    print(right_bottom_x, right_bottom_y)
+
+    x = left_top_x
+    y = left_top_y
+    width_of_tile = width / 100
+    height_of_tile = height / 100
+
+    big_left_top_x = (x // width_of_tile) * width_of_tile
+    big_left_top_y = (y // height_of_tile) * height_of_tile
+
+    x = right_bottom_x
+    y = right_bottom_y
+
+    big_right_bottom_x = ((x // width_of_tile) + 1) * width_of_tile
+    big_right_bottom_y = ((y // height_of_tile) + 1) * height_of_tile
+
+    big_right_top_x, big_right_top_y, big_left_bottom_x, big_left_bottom_y = calculate_rt_and_lb_coordinates(
+        big_left_top_x, big_left_top_y,
+        big_right_bottom_x,
+        big_right_bottom_y)
+
+    print(big_left_top_x, big_left_top_y)
+    print(big_right_top_x, big_right_top_y)
+    print(big_left_bottom_x, big_left_bottom_y)
+    print(big_right_bottom_x, big_right_bottom_y)
+
+    my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
+                               big_right_bottom_y, fill="blue")
+
+
+def calculate_rt_and_lb_coordinates(x1, y1, x2, y2):
+    x3, y3 = x2, y1  # Right-top coordinate
+    x4, y4 = x1, y2  # Left-bottom coordinate
+    return x3, y3, x4, y4
 
 
 # container.bind("<Button-1>", on_release())
@@ -107,9 +127,10 @@ for x in range(200):
         tiles[x][y] = Label(container, text="D")
         tiles[x][y].grid(row=x, column=y)
 """
-my_canvas.bind("<ButtonPress-1>", on_press)
-my_canvas.bind("<B1-Motion>", on_drag)
-my_canvas.bind("<ButtonRelease-1>", on_release)
+
+container.bind("<ButtonPress-1>", on_press)
+container.bind("<B1-Motion>", on_drag)
+container.bind("<ButtonRelease-1>", on_release)
 container.mainloop()
 
 """
