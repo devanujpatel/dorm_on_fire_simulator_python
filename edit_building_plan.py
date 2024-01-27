@@ -25,7 +25,7 @@ height = container.winfo_screenheight()  # height of screen
 container.winfo_toplevel().geometry("%dx%d%+d%+d" % (width, height, 0, 0))
 
 my_canvas = Canvas(container, width=width, height=height)
-my_canvas.pack(pady=20)
+my_canvas.grid(row = 1, column = 0) #pack(pady=20))
 
 rect_start_x = None
 rect_start_y = None
@@ -39,6 +39,9 @@ for i in range(divisions):
 # for x in range(divisions):
 #    for y in range(divisions):
 #        GUI_Tile(x, y, width, height, all_tiles)
+
+saveMessage = Label(container, text ="To Save: COMMAND + S (Mac) or CTRL + S", width = 50)
+saveMessage.grid(row = 0, column = 0)
 
 tempFlammable = False
 tempWalkable = False
@@ -144,7 +147,7 @@ def ask_the_three_questions(big_left_top_x, big_left_top_y, big_right_bottom_x, 
     walkable_var = StringVar(window)
     walkable_var.set("Yes")  # default value
     color_var = StringVar(window)
-    color_var.set("Grey")  # default value
+    color_var.set("dim grey")  # default value
 
     # Create a label and dropdown menu for each question
     flammable_label = Label(window, text="Are the tiles flammable?")

@@ -52,6 +52,7 @@ def preloaded():
     frame.destroy()
     existingPlansFrame = Frame(root, height=rootHeight - 10, width=rootWidth - 10)
     existingPlansFrame.pack()
+    root.destroy()
     # drop = ttk.Combobox(existingPlansFrame, value = "     ", "      ")
     # drop.current(0)
 
