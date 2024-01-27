@@ -1,11 +1,19 @@
+import threading
+import time
 from tkinter import *
-from GUI_Tile import GUI_Tile
+import pickle
+from tkinter import simpledialog, messagebox
+
+# from GUI_Tile import GUI_Tile
 from Rectangle import Rectangle
+from Tiles import Tile
 
 # from tkinter import messagebox, simpledialog
 
+divisions = 100
 
 all_tiles = {}
+all_tiles_list = []
 all_rectangles = []
 big_rectangle_id = 0
 
@@ -23,20 +31,104 @@ rect_start_x = None
 rect_start_y = None
 rect_id = None
 
-for i in range(100):
+for i in range(divisions):
     all_tiles[i] = {}
-    for j in range(100):
+    for j in range(divisions):
         all_tiles[i][j] = None
 
-for x in range(100):
-    for y in range(100):
-        GUI_Tile(x, y, width, height, all_tiles)
+# for x in range(divisions):
+#    for y in range(divisions):
+#        GUI_Tile(x, y, width, height, all_tiles)
 
 tempFlammable = False
 tempWalkable = False
+wait_for_response = False
 tempColor = None
 
-def ask_the_three_questions():
+
+class thread(threading.Thread):
+    def __init__(self, thread_name, thread_ID, big_left_top_x, big_left_top_y, big_right_bottom_x, big_right_bottom_y,
+                 width_of_tile, height_of_tile):
+        threading.Thread.__init__(self)
+        self.thread_name = thread_name
+        self.thread_ID = thread_ID
+        self.big_left_top_x = big_left_top_x
+        self.big_left_top_y = big_left_top_y
+        self.big_right_bottom_x = big_right_bottom_x
+        self.big_right_bottom_y = big_right_bottom_y
+        self.width_of_tile = width_of_tile
+        self.height_of_tile = height_of_tile
+
+        # helper function to execute the threads
+
+    def run(self):
+        global big_rectangle_id
+        print("running")
+        while True:
+            print(tempColor)
+            if tempColor is None:
+                time.sleep(1)
+                print(tempColor)
+            else:
+                print("breaking")
+                break
+
+
+def draw_grid_on_canvas(canvas, width, height, divisions):
+    cell_width = width / divisions
+    cell_height = height / divisions
+
+    for i in range(1, divisions):
+        x = i * cell_width
+        canvas.create_line(x, 0, x, height, fill="gray", dash=(2, 2))
+
+    for i in range(1, divisions):
+        y = i * cell_height
+        canvas.create_line(0, y, width, y, fill="gray", dash=(2, 2))
+
+
+def further_process(big_left_top_x, big_left_top_y, big_right_bottom_x, big_right_bottom_y, width_of_tile,
+                    height_of_tile):
+    global big_rectangle_id
+    print("---")
+    print(tempColor)
+    print("---")
+
+    my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
+                               big_right_bottom_y, fill=tempColor)
+
+    # flammability, walkability, color = ask_the_three_questions()
+    starting_x = round(big_left_top_x / width_of_tile, 0)
+    starting_y = round(big_left_top_y / height_of_tile, 0)
+
+    print("---")
+    print(starting_x, starting_y)
+
+    ending_x = round(big_right_bottom_x / width_of_tile, 0)
+    ending_y = round(big_right_bottom_y / height_of_tile, 0)
+
+    print(ending_x, ending_y)
+
+    for x_coord in range(int(starting_x), int(ending_x) + 1):
+        for y_coord in range(int(starting_y), int(ending_y) + 1):
+            all_tiles[x_coord][y_coord] = Tile(x_coord, y_coord, tempWalkable, tempFlammable, False, False,
+                                               tempColor,
+                                               big_rectangle_id)
+            all_tiles_list.append(Tile(x_coord, y_coord, tempWalkable, tempFlammable, False, False,
+                                               tempColor,
+                                               big_rectangle_id))
+    big_rectangle_id += 1
+    rect_start_x = None
+    rect_start_y = None
+    rect_id = None
+    print("done")
+    print(all_tiles_list)
+    with open("dummy.dat", 'wb') as file:
+        pickle.dump(all_tiles_list, file)
+
+
+def ask_the_three_questions(big_left_top_x, big_left_top_y, big_right_bottom_x, big_right_bottom_y, width_of_tile,
+                            height_of_tile):
     # Create a new top-level window
     padConstant = 30
     window = Toplevel(padx=padConstant, pady=padConstant)
@@ -69,25 +161,29 @@ def ask_the_three_questions():
 
     color_label = Label(window, text="Select area color: ")
     color_label.pack()
-    color_options = ["Grey", "Blue", "Green", "Yellow", "Purple", "Black"]
+    color_options = ["dim gray", "lime green", "maroon", "yellow", "coral", "pink"]
     color_dropdown = OptionMenu(window, color_var, *color_options)
     color_dropdown.pack()
 
     # Create a function to be called when the button is clicked
     def on_button_click():
+        global tempFlammable, tempWalkable, tempColor
         print("Selected options:", flammable_var.get(), walkable_var.get(), color_var.get())
-        if flammable_var.get() == "Yes":
-            tempFlammable = True
-        if walkable_var.get() == "Yes":
-            tempWalkwable = True
+        tempFlammable = flammable_var.get()
+        tempWalkable = walkable_var.get()
         tempColor = color_var.get()
+        print("set global variables")
+        print(tempColor)
         window.destroy()
+        further_process(big_left_top_x, big_left_top_y, big_right_bottom_x, big_right_bottom_y, width_of_tile,
+                        height_of_tile)
 
     # Create an "OK" button
     button = Button(window, text="OK", command=on_button_click)
     button.pack()
-    draw_grid_on_canvas(my_canvas, width, height, 100)
+
     window.mainloop()
+
 
 def on_press(event):
     global rect_start_x, rect_start_y, rect_id
@@ -107,18 +203,6 @@ def on_press(event):
         tags="rect",
     )
 
-def draw_grid_on_canvas(canvas, width, height, divisions):
-    cell_width = width / divisions
-    cell_height = height / divisions
-
-    for i in range(1, divisions):
-        x = i * cell_width
-        canvas.create_line(x, 0, x, height, fill="gray", dash=(2, 2))
-
-    for i in range(1, divisions):
-        y = i * cell_height
-        canvas.create_line(0, y, width, y, fill="gray", dash=(2, 2))
-    canvas.focus_set()
 
 def on_drag(event):
     cur_x = my_canvas.canvasx(event.x)
@@ -129,7 +213,7 @@ def on_drag(event):
 
 
 def on_release(event):
-    global rect_start_x, rect_start_y
+    global rect_start_x, rect_start_y, big_rectangle_id
     # Get the coordinates of the selected region
     rect_end_x = my_canvas.canvasx(event.x)
     rect_end_y = my_canvas.canvasy(event.y)
@@ -158,8 +242,8 @@ def on_release(event):
 
     x = left_top_x
     y = left_top_y
-    width_of_tile = width / 100
-    height_of_tile = height / 100
+    width_of_tile = width / divisions
+    height_of_tile = height / divisions
 
     big_left_top_x = (x // width_of_tile) * width_of_tile
     big_left_top_y = (y // height_of_tile) * height_of_tile
@@ -175,20 +259,23 @@ def on_release(event):
         big_right_bottom_x,
         big_right_bottom_y)
 
-    # print(big_left_top_x, big_left_top_y)
-    # print(big_right_top_x, big_right_top_y)
-    # print(big_left_bottom_x, big_left_bottom_y)
-    # print(big_right_bottom_x, big_right_bottom_y)
+    print(big_left_top_x, big_left_top_y)
+    print(big_right_top_x, big_right_top_y)
+    print(big_left_bottom_x, big_left_bottom_y)
+    print(big_right_bottom_x, big_right_bottom_y)
 
     new_rectangle = Rectangle(big_left_top_x, big_left_top_y, big_right_top_x, big_right_top_y, big_left_bottom_x,
                               big_left_bottom_y, big_right_bottom_x, big_right_bottom_y)
 
+    flag = True
+
     if len(all_rectangles) == 0:
-        all_rectangles.append(new_rectangle)
-        my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
-                                   big_right_bottom_y, fill="blue")
+        pass
+        # all_rectangles.append(new_rectangle)
+        # my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
+        #                            big_right_bottom_y, fill="blue")
+        # ask_if_flammable()
     else:
-        flag = True
         for rectangle in all_rectangles:
             if rectangles_overlap(rectangle.get_coords(), new_rectangle.get_coords()):
                 pass
@@ -196,32 +283,35 @@ def on_release(event):
                 print("invalid")
                 flag = False
                 break
-
             else:
                 print("valid")
-        if flag:
-            all_rectangles.append(new_rectangle)
-            my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
-                                       big_right_bottom_y, fill="blue")
+    if flag:
+        all_rectangles.append(new_rectangle)
+        # my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
+        #                           big_right_bottom_y, fill="blue")
+        # thread1 = thread(f"name{big_rectangle_id}", big_rectangle_id, big_left_top_x, big_left_top_y,
+        # big_right_bottom_x, big_right_bottom_y,
+        # width_of_tile, height_of_tile)
+        # thread1.start()
+        ask_the_three_questions(big_left_top_x, big_left_top_y, big_right_bottom_x, big_right_bottom_y, width_of_tile,
+                                height_of_tile)
+        # big_left_top_x, big_left_top_y, big_right_bottom_x, big_right_bottom_y, width_of_tile, height_of_tile):
 
-    ask_the_three_questions()
+        # tempFlammable = None
+        # tempWalkable = None
+        # def dialog(var):
+        #    root2 = Tk()
+        #    box = Frame(root2)
+        #    question = Label(box, text = "Is the material " +  var + "?")
+        #    def yes():
+        #        temp = True
+        #    def no():
+        #        temp = False
 
-    # tempFlammable = None
-    # tempWalkable = None
-    # def dialog(var):
-    #    root2 = Tk()
-    #    box = Frame(root2)
-    #    question = Label(box, text = "Is the material " +  var + "?")
-    #    def yes():
-    #        temp = True
-    #    def no():
-    #        temp = False
+        #    yButton = Button(box, text = "Yes", command = yes)
+        #    nButton = Button(box, text = "False", command = no)
 
-    #    yButton = Button(box, text = "Yes", command = yes)
-    #    nButton = Button(box, text = "False", command = no)
-
-
-# userInput = (simpledialog.askstring(title='Is material flammable', prompt = "Yes or No?"))
+        # userInput = (simpledialog.askstring(title='Is material flammable', prompt = "Yes or No?"))
 
 
 def rectangles_overlap(rect1, rect2):
@@ -260,263 +350,5 @@ for x in range(200):
 container.bind("<ButtonPress-1>", on_press)
 container.bind("<B1-Motion>", on_drag)
 container.bind("<ButtonRelease-1>", on_release)
+draw_grid_on_canvas(my_canvas, width, height, divisions)
 container.mainloop()
-
-"""
-import tkinter as tk
-
-
-class CoordinateSystemGUI:
-    def __init__(self, master, width, height, grid_size):
-        self.master = master
-        self.master.title("Coordinate System GUI")
-
-        self.width = width
-        self.height = height
-        self.grid_size = grid_size
-
-        self.master.geometry(f"{self.width}x{self.height}")
-
-        self.canvas = tk.Canvas(self.master, width=self.width, height=self.height, bg="white")
-        self.canvas.pack(fill=tk.BOTH, expand=True)
-
-        self.draw_coordinate_system()
-        self.draw_grid()
-
-        self.start_x = None
-        self.start_y = None
-        self.rect = None
-
-        self.canvas.bind("<ButtonPress-1>", self.on_press)
-        self.canvas.bind("<B1-Motion>", self.on_drag)
-        self.canvas.bind("<ButtonRelease-1>", self.on_release)
-
-    def draw_coordinate_system(self):
-        pass
-    # Draw X-axis
-    # self.canvas.create_line(0, self.height // 2, self.width, self.height // 2, width=2)
-
-    # Draw Y-axis
-    # self.canvas.create_line(self.width // 2, 0, self.width // 2, self.height, width=2)
-
-    def draw_grid(self):
-        for i in range(0, self.width, self.grid_size):
-            self.canvas.create_line(i, 0, i, self.height, dash=(2, 2), fill="gray")
-
-        for j in range(0, self.height, self.grid_size):
-            self.canvas.create_line(0, j, self.width, j, dash=(2, 2), fill="gray")
-
-    def on_press(self, event):
-        self.start_x = self.canvas.canvasx(event.x)
-        self.start_y = self.canvas.canvasy(event.y)
-
-        if self.rect:
-            self.canvas.delete(self.rect)
-
-        self.rect = self.canvas.create_rectangle(self.start_x, self.start_y, self.start_x, self.start_y, outline="blue")
-
-    def on_drag(self, event):
-        cur_x = self.canvas.canvasx(event.x)
-        cur_y = self.canvas.canvasy(event.y)
-
-        self.canvas.coords(self.rect, self.start_x, self.start_y, cur_x, cur_y)
-
-    def on_release(self, event):
-        pass  # You can add logic here when the user releases the mouse button
-
-
-def main():
-    root = tk.Tk()
-    grid_size = 20
-    screen_width = root.winfo_screenwidth()
-    screen_height = root.winfo_screenheight()
-    app = CoordinateSystemGUI(root, screen_width, screen_height, grid_size)
-
-    root.mainloop()
-
-
-if __name__ == "__main__":
-    main()
-
-import tkinter as tk
-
-
-class CoordinateSystemGUI:
-    def __init__(self, master, width, height):
-        self.master = master
-        self.master.title("Coordinate System GUI")
-
-        self.width = width
-        self.height = height
-
-        self.master.geometry(f"{self.width}x{self.height}")
-
-        self.canvas = tk.Canvas(self.master, width=self.width, height=self.height, bg="white")
-        self.canvas.pack(fill=tk.BOTH, expand=True)
-
-        self.draw_coordinate_system()
-
-        self.start_x = None
-        self.start_y = None
-        self.rect = None
-
-        self.canvas.bind("<ButtonPress-1>", self.on_press)
-        self.canvas.bind("<B1-Motion>", self.on_drag)
-        self.canvas.bind("<ButtonRelease-1>", self.on_release)
-
-    def draw_coordinate_system(self):
-        # Draw X-axis
-        self.canvas.create_line(50, self.height // 2, self.width - 50, self.height // 2, width=2)
-
-        # Draw Y-axis
-        self.canvas.create_line(self.width // 2, 50, self.width // 2, self.height - 50, width=2)
-
-    def on_press(self, event):
-        self.start_x = self.canvas.canvasx(event.x)
-        self.start_y = self.canvas.canvasy(event.y)
-
-        if self.rect:
-            self.canvas.delete(self.rect)
-
-        self.rect = self.canvas.create_rectangle(self.start_x, self.start_y, self.start_x, self.start_y, outline="blue")
-
-    def on_drag(self, event):
-        cur_x = self.canvas.canvasx(event.x)
-        cur_y = self.canvas.canvasy(event.y)
-
-        self.canvas.coords(self.rect, self.start_x, self.start_y, cur_x, cur_y)
-
-    def on_release(self, event):
-        pass  # You can add logic here when the user releases the mouse button
-
-
-def main():
-    root = tk.Tk()
-    screen_width = root.winfo_screenwidth()
-    screen_height = root.winfo_screenheight()
-
-    app = CoordinateSystemGUI(root, screen_width, screen_height)
-
-    root.mainloop()
-
-
-if __name__ == "__main__":
-    main()
-"""
-
-"""
-import tkinter as tk
-
-
-class CoordinateSystemGUI:
-    def __init__(self, master, width, height, grid_size):
-        self.master = master
-        self.master.title("Coordinate System GUI")
-
-        self.width = width
-        self.height = height
-        self.grid_size = grid_size
-
-        self.master.geometry(f"{self.width}x{self.height}")
-
-        self.canvas = tk.Canvas(self.master, width=self.width, height=self.height, bg="white")
-        self.canvas.pack(fill=tk.BOTH, expand=True)
-
-        self.draw_coordinate_system()
-        self.draw_grid()
-
-        self.start_x = None
-        self.start_y = None
-        self.rect = None
-
-        self.canvas.bind("<ButtonPress-1>", self.on_press)
-        self.canvas.bind("<B1-Motion>", self.on_drag)
-        self.canvas.bind("<ButtonRelease-1>", self.on_release)
-
-    def draw_coordinate_system(self):
-        # Draw X-axis
-        self.canvas.create_line(0, self.height // 2, self.width, self.height // 2, width=2)
-
-        # Draw Y-axis
-        self.canvas.create_line(self.width // 2, 0, self.width // 2, self.height, width=2)
-
-    def draw_grid(self):
-        for i in range(0, self.width, self.grid_size):
-            self.canvas.create_line(i, 0, i, self.height, dash=(2, 2), fill="gray")
-
-        for j in range(0, self.height, self.grid_size):
-            self.canvas.create_line(0, j, self.width, j, dash=(2, 2), fill="gray")
-
-    def on_press(self, event):
-        self.start_x = self.canvas.canvasx(event.x)
-        self.start_y = self.canvas.canvasy(event.y)
-
-        if self.rect:
-            self.canvas.delete(self.rect)
-
-        self.rect = self.canvas.create_rectangle(self.start_x, self.start_y, self.start_x, self.start_y, outline="blue")
-
-    def on_drag(self, event):
-        cur_x = self.canvas.canvasx(event.x)
-        cur_y = self.canvas.canvasy(event.y)
-
-        self.canvas.coords(self.rect, self.start_x, self.start_y, cur_x, cur_y)
-
-    def on_release(self, event):
-        cur_x = self.canvas.canvasx(event.x)
-        cur_y = self.canvas.canvasy(event.y)
-
-        selected_pixels = self.get_selected_pixels(self.start_x, self.start_y, cur_x, cur_y)
-        tile_coordinates = self.get_all_tile_coordinates(selected_pixels)
-
-        print("Selected Pixels:", selected_pixels)
-        print("All Tile Coordinates:", tile_coordinates)
-
-    def get_selected_pixels(self, x1, y1, x2, y2):
-        # Convert canvas coordinates to pixel coordinates
-        x1_pixel, y1_pixel = self.canvas.canvasx(x1), self.canvas.canvasy(y1)
-        x2_pixel, y2_pixel = self.canvas.canvasx(x2), self.canvas.canvasy(y2)
-
-        # Ensure x1_pixel < x2_pixel and y1_pixel < y2_pixel
-        x1_pixel, x2_pixel = min(x1_pixel, x2_pixel), max(x1_pixel, x2_pixel)
-        y1_pixel, y2_pixel = min(y1_pixel, y2_pixel), max(y1_pixel, y2_pixel)
-
-        return (x1_pixel, y1_pixel, x2_pixel, y2_pixel)
-
-    def get_tile_coordinates(self, x, y):
-        center_x = x
-        center_y = y
-
-        tile_x = int((center_x - self.width // 2) / self.grid_size)
-        tile_y = int((self.height // 2 - center_y) / self.grid_size)
-
-        return tile_x, tile_y
-
-    def get_all_tile_coordinates(self, pixels):
-        x1, y1, x2, y2 = pixels
-
-        start_tile_x, start_tile_y = self.get_tile_coordinates(x1, y1)
-        end_tile_x, end_tile_y = self.get_tile_coordinates(x2, y2)
-
-        all_tile_coordinates = []
-
-        for tile_x in range(start_tile_x, end_tile_x + 1):
-            for tile_y in range(start_tile_y, end_tile_y + 1):
-                all_tile_coordinates.append((tile_x, tile_y))
-
-        return all_tile_coordinates
-
-
-def main():
-    root = tk.Tk()
-    grid_size = 20
-    screen_width = root.winfo_screenwidth()
-    screen_height = root.winfo_screenheight()
-    app = CoordinateSystemGUI(root, screen_width, screen_height, grid_size)
-
-    root.mainloop()
-
-
-if __name__ == "__main__":
-    main()
-"""
