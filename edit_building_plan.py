@@ -1,11 +1,13 @@
 from tkinter import *
 from GUI_Tile import GUI_Tile
 from Rectangle import Rectangle
-from tkinter import messagebox, simpledialog
+
+# from tkinter import messagebox, simpledialog
 
 
 all_tiles = {}
 all_rectangles = []
+big_rectangle_id = 0
 
 container = Tk()
 
@@ -34,12 +36,18 @@ tempFlammable = False
 tempWalkable = False
 tempColor = None
 
+def ask_the_three_questions():
+    pass
+    # return a tuple: (flammability (True or False), walkability (True or False), color (a string)
+
+# consolidate the following three functions into the above one
 def ask_if_flammable():
     # Create a new top-level window
     padConstant = 30
-    window = Toplevel(padx = padConstant, pady = padConstant)
+    window = Toplevel(padx=padConstant, pady=padConstant)
     window.title("")
-    positionstr = "+" + '{:.0f}'.format((width/2 - padConstant*3)) + "+" + '{:.0f}'.format((height/2 - padConstant*3))
+    positionstr = "+" + '{:.0f}'.format((width / 2 - padConstant * 3)) + "+" + '{:.0f}'.format(
+        (height / 2 - padConstant * 3))
     print(positionstr)
     window.geometry(positionstr)
 
@@ -68,12 +76,14 @@ def ask_if_flammable():
     button = Button(window, text="OK", command=on_button_click)
     button.pack()
 
+
 def ask_if_walkable():
     # Create a new top-level window
     padConstant = 30
-    window = Toplevel(padx = padConstant, pady = padConstant)
+    window = Toplevel(padx=padConstant, pady=padConstant)
     window.title("")
-    positionstr = "+" + '{:.0f}'.format((width/2 - padConstant*3)) + "+" + '{:.0f}'.format((height/2 - padConstant*3))
+    positionstr = "+" + '{:.0f}'.format((width / 2 - padConstant * 3)) + "+" + '{:.0f}'.format(
+        (height / 2 - padConstant * 3))
     print(positionstr)
     window.geometry(positionstr)
 
@@ -102,12 +112,14 @@ def ask_if_walkable():
     button = Button(window, text="OK", command=on_button_click)
     button.pack()
 
+
 def ask_color():
     # Create a new top-level window
     padConstant = 30
-    window = Toplevel(padx = padConstant, pady = padConstant)
+    window = Toplevel(padx=padConstant, pady=padConstant)
     window.title("")
-    positionstr = "+" + '{:.0f}'.format((width/2 - padConstant*3)) + "+" + '{:.0f}'.format((height/2 - padConstant*3))
+    positionstr = "+" + '{:.0f}'.format((width / 2 - padConstant * 3)) + "+" + '{:.0f}'.format(
+        (height / 2 - padConstant * 3))
     print(positionstr)
     window.geometry(positionstr)
 
@@ -134,6 +146,7 @@ def ask_color():
     # Create an "OK" button
     button = Button(window, text="OK", command=on_button_click)
     button.pack()
+
 
 def on_press(event):
     global rect_start_x, rect_start_y, rect_id
@@ -238,11 +251,11 @@ def on_release(event):
             my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
                                        big_right_bottom_y, fill="blue")
 
-    ask_if_flammable()
+            flammability, walkability, color = ask_the_three_questions()
 
-    #tempFlammable = None
-    #tempWalkable = None
-    #def dialog(var):
+    # tempFlammable = None
+    # tempWalkable = None
+    # def dialog(var):
     #    root2 = Tk()
     #    box = Frame(root2)
     #    question = Label(box, text = "Is the material " +  var + "?")
@@ -255,8 +268,7 @@ def on_release(event):
     #    nButton = Button(box, text = "False", command = no)
 
 
-   #userInput = (simpledialog.askstring(title='Is material flammable', prompt = "Yes or No?"))
-
+# userInput = (simpledialog.askstring(title='Is material flammable', prompt = "Yes or No?"))
 
 
 def rectangles_overlap(rect1, rect2):
@@ -268,7 +280,7 @@ def rectangles_overlap(rect1, rect2):
     x1_rect2, y1_rect2, x2_rect2, y2_rect2 = rect2
 
     # Check for non-overlapping conditions
-    if x2_rect1-1 < x1_rect2 or x2_rect2 < x1_rect1+1 or y2_rect1-1 < y1_rect2 or y2_rect2 < y1_rect1+1:
+    if x2_rect1 - 1 < x1_rect2 or x2_rect2 < x1_rect1 + 1 or y2_rect1 - 1 < y1_rect2 or y2_rect2 < y1_rect1 + 1:
         return False
     else:
         return True
