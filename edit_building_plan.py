@@ -1,9 +1,11 @@
 from tkinter import *
-from GUI_Tile import GUI_Tile
+# from GUI_Tile import GUI_Tile
 from Rectangle import Rectangle
+from Tiles import Tile
 
 # from tkinter import messagebox, simpledialog
 
+divisions = 100
 
 all_tiles = {}
 all_rectangles = []
@@ -23,14 +25,14 @@ rect_start_x = None
 rect_start_y = None
 rect_id = None
 
-for i in range(100):
+for i in range(divisions):
     all_tiles[i] = {}
-    for j in range(100):
+    for j in range(divisions):
         all_tiles[i][j] = None
 
-for x in range(100):
-    for y in range(100):
-        GUI_Tile(x, y, width, height, all_tiles)
+# for x in range(divisions):
+#    for y in range(divisions):
+#        GUI_Tile(x, y, width, height, all_tiles)
 
 tempFlammable = False
 tempWalkable = False
@@ -178,7 +180,7 @@ def on_drag(event):
 
 
 def on_release(event):
-    global rect_start_x, rect_start_y
+    global rect_start_x, rect_start_y, big_rectangle_id
     # Get the coordinates of the selected region
     rect_end_x = my_canvas.canvasx(event.x)
     rect_end_y = my_canvas.canvasy(event.y)
@@ -207,8 +209,8 @@ def on_release(event):
 
     x = left_top_x
     y = left_top_y
-    width_of_tile = width / 100
-    height_of_tile = height / 100
+    width_of_tile = width / divisions
+    height_of_tile = height / divisions
 
     big_left_top_x = (x // width_of_tile) * width_of_tile
     big_left_top_y = (y // height_of_tile) * height_of_tile
@@ -224,10 +226,10 @@ def on_release(event):
         big_right_bottom_x,
         big_right_bottom_y)
 
-    # print(big_left_top_x, big_left_top_y)
-    # print(big_right_top_x, big_right_top_y)
-    # print(big_left_bottom_x, big_left_bottom_y)
-    # print(big_right_bottom_x, big_right_bottom_y)
+    print(big_left_top_x, big_left_top_y)
+    print(big_right_top_x, big_right_top_y)
+    print(big_left_bottom_x, big_left_bottom_y)
+    print(big_right_bottom_x, big_right_bottom_y)
 
     new_rectangle = Rectangle(big_left_top_x, big_left_top_y, big_right_top_x, big_right_top_y, big_left_bottom_x,
                               big_left_bottom_y, big_right_bottom_x, big_right_bottom_y)
@@ -259,18 +261,22 @@ def on_release(event):
         walkability = tempWalkable
         color = tempColor
         # flammability, walkability, color = ask_the_three_questions()
+        starting_x = round(big_left_top_x / width_of_tile, 0)
+        starting_y = round(big_left_top_y / height_of_tile, 0)
 
-        # identify coordinates
-        starting_x = big_left_top_x // 100
-        starting_y = big_left_top_y // 100
-
+        print("---")
         print(starting_x, starting_y)
 
-        ending_x = (big_right_top_x - big_left_top_x)/100 + starting_x
-        ending_y = (big_right_top_y - big_left_top_y) / 100 + starting_y
+        ending_x = round(big_right_bottom_x / width_of_tile, 0)
+        ending_y = round(big_right_bottom_y / height_of_tile, 0)
 
         print(ending_x, ending_y)
 
+        for x_coord in range(int(starting_x), int(ending_x) + 1):
+            for y_coord in range(int(starting_y), int(ending_y) + 1):
+                all_tiles[x_coord][y_coord] = Tile(x_coord, y_coord, True, True, True, True, "Black", big_rectangle_id)
+
+    big_rectangle_id += 1
     # tempFlammable = None
     # tempWalkable = None
     # def dialog(var):
