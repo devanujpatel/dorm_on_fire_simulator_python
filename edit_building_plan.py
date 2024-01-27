@@ -37,11 +37,6 @@ tempWalkable = False
 tempColor = None
 
 def ask_the_three_questions():
-    pass
-    # return a tuple: (flammability (True or False), walkability (True or False), color (a string)
-
-# consolidate the following three functions into the above one
-def ask_if_flammable():
     # Create a new top-level window
     padConstant = 30
     window = Toplevel(padx=padConstant, pady=padConstant)
@@ -51,102 +46,41 @@ def ask_if_flammable():
     print(positionstr)
     window.geometry(positionstr)
 
-    # Create a StringVar to hold the selected option
-    var = StringVar(window)
-    var.set("Yes")  # default value
+    # Create a StringVar for each question
+    flammable_var = StringVar(window)
+    flammable_var.set("Yes")  # default value
+    walkable_var = StringVar(window)
+    walkable_var.set("Yes")  # default value
+    color_var = StringVar(window)
+    color_var.set("Grey")  # default value
 
-    # Create a label
-    label = Label(window, text="Are the tiles flammable?")
-    label.pack()
+    # Create a label and dropdown menu for each question
+    flammable_label = Label(window, text="Are the tiles flammable?")
+    flammable_label.pack()
+    flammable_options = ["Yes", "No"]
+    flammable_dropdown = OptionMenu(window, flammable_var, *flammable_options)
+    flammable_dropdown.pack()
 
-    # Create a dropdown menu
-    options = ["Yes", "No"]
-    dropdown = OptionMenu(window, var, *options)
-    dropdown.pack()
+    walkable_label = Label(window, text="Are the tiles walkable?")
+    walkable_label.pack()
+    walkable_options = ["Yes", "No"]
+    walkable_dropdown = OptionMenu(window, walkable_var, *walkable_options)
+    walkable_dropdown.pack()
+
+    color_label = Label(window, text="Select area color: ")
+    color_label.pack()
+    color_options = ["Grey", "Blue", "Green", "Yellow", "Purple", "Black"]
+    color_dropdown = OptionMenu(window, color_var, *color_options)
+    color_dropdown.pack()
 
     # Create a function to be called when the button is clicked
     def on_button_click():
-        print("Selected option:", var.get())
-        if var.get() == "True":
-            tempFlammable = True
-        ask_if_walkable()
+        print("Selected options:", flammable_var.get(), walkable_var.get(), color_var.get())
         window.destroy()
 
     # Create an "OK" button
     button = Button(window, text="OK", command=on_button_click)
     button.pack()
-
-
-def ask_if_walkable():
-    # Create a new top-level window
-    padConstant = 30
-    window = Toplevel(padx=padConstant, pady=padConstant)
-    window.title("")
-    positionstr = "+" + '{:.0f}'.format((width / 2 - padConstant * 3)) + "+" + '{:.0f}'.format(
-        (height / 2 - padConstant * 3))
-    print(positionstr)
-    window.geometry(positionstr)
-
-    # Create a StringVar to hold the selected option
-    var = StringVar(window)
-    var.set("Yes")  # default value
-
-    # Create a label
-    label = Label(window, text="Are the tiles walkable?")
-    label.pack()
-
-    # Create a dropdown menu
-    options = ["Yes", "No"]
-    dropdown = OptionMenu(window, var, *options)
-    dropdown.pack()
-
-    # Create a function to be called when the button is clicked
-    def on_button_click():
-        if var.get() == "True":
-            tempWalkable = True
-        print("Selected option:", var.get())
-        ask_color()
-        window.destroy()
-
-    # Create an "OK" button
-    button = Button(window, text="OK", command=on_button_click)
-    button.pack()
-
-
-def ask_color():
-    # Create a new top-level window
-    padConstant = 30
-    window = Toplevel(padx=padConstant, pady=padConstant)
-    window.title("")
-    positionstr = "+" + '{:.0f}'.format((width / 2 - padConstant * 3)) + "+" + '{:.0f}'.format(
-        (height / 2 - padConstant * 3))
-    print(positionstr)
-    window.geometry(positionstr)
-
-    # Create a StringVar to hold the selected option
-    var = StringVar(window)
-    var.set("Grey")  # default value
-
-    # Create a label
-    label = Label(window, text="Select area color: ")
-    label.pack()
-
-    # Create a dropdown menu
-    options = ["Grey", "Blue", "Green", "Yellow", "Purple", "Black"]
-    dropdown = OptionMenu(window, var, *options)
-    dropdown.pack()
-
-    # Create a function to be called when the button is clicked
-    def on_button_click():
-        print("Selected option:", var.get())
-        tempColor = var.get()
-        print(tempColor)
-        window.destroy()
-
-    # Create an "OK" button
-    button = Button(window, text="OK", command=on_button_click)
-    button.pack()
-
 
 def on_press(event):
     global rect_start_x, rect_start_y, rect_id
@@ -251,7 +185,7 @@ def on_release(event):
             my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
                                        big_right_bottom_y, fill="blue")
 
-            flammability, walkability, color = ask_the_three_questions()
+    ask_the_three_questions()
 
     # tempFlammable = None
     # tempWalkable = None
