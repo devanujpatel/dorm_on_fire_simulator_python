@@ -20,7 +20,7 @@ class Tile:
 
     def increment_population(self):
         self.population += 1
-        self.cost_imposed_on_weight += 10
+        self.cost_imposed_on_weight += 50
 
     def decrement_population(self):
         self.population -= 1
@@ -28,7 +28,7 @@ class Tile:
 
     def set_on_fire(self):
         self.flammable = True
-        self.cost_imposed_on_weight += 100
+        self.cost_imposed_on_weight += 500
 
     def is_walkable(self):
         return self.walkable
