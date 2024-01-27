@@ -1,7 +1,8 @@
 from tkinter import *
 import pickle
+import preexistingMaps
 
-
+name = preexistingMaps.
 root = Tk()
 root.title("")
 width = root.winfo_screenwidth()  # width of screen
@@ -14,7 +15,7 @@ root.winfo_toplevel().geometry("%dx%d%+d%+d" % (width, height, 0, 0))
 my_canvas = Canvas(root, width = width, height = height)
 my_canvas.pack()
 
-with open('dummy.dat', 'rb') as p:
+with open(name, 'rb') as p:
     p1 = pickle.load(p)
 
 print("Canvas Dimensions:", my_canvas.winfo_width(), my_canvas.winfo_height())

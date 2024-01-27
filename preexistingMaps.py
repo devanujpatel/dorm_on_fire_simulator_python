@@ -29,11 +29,8 @@ def listOfExisting():
         dat_files = glob.glob(os.path.join(current_directory, '*.dat'))
         dat_file_names = [os.path.basename(file) for file in dat_files]
         print(dat_file_names)
-        var_options = []
-        for dat_file in dat_file_names:
-            var_options.append(dat_file)
-       # var_options = dat_file_names
-        var_dropdown = OptionMenu(frame, var, var_options)
+        var_options = dat_file_names
+        var_dropdown = OptionMenu(frame, var, *var_options)
         var_dropdown.pack()
     except Exception as e:
         print(f"Error: {e}")
