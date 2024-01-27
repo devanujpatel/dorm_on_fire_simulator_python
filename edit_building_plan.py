@@ -2,6 +2,7 @@ from tkinter import *
 from GUI_Tile import GUI_Tile
 from Rectangle import Rectangle
 
+
 all_tiles = {}
 all_rectangles = []
 
@@ -27,6 +28,33 @@ for i in range(100):
 for x in range(100):
     for y in range(100):
         GUI_Tile(x, y, width, height, all_tiles)
+
+def ask_if_flammable():
+    # Create a new top-level window
+    window = Toplevel()
+
+    # Create a StringVar to hold the selected option
+    var = StringVar(window)
+    var.set("Yes")  # default value
+
+    # Create a label
+    label = Label(window, text="Tile flammable?")
+    label.pack()
+
+    # Create a dropdown menu
+    options = ["Yes", "No"]
+    dropdown = OptionMenu(window, var, *options)
+    dropdown.pack()
+
+    # Create a function to be called when the button is clicked
+    def on_button_click():
+        print("Selected option:", var.get())
+        window.destroy()
+
+    # Create an "OK" button
+    button = Button(window, text="OK", command=on_button_click)
+    button.pack()
+
 
 
 def on_press(event):
@@ -131,6 +159,8 @@ def on_release(event):
             all_rectangles.append(new_rectangle)
             my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
                                        big_right_bottom_y, fill="blue")
+
+    ask_if_flammable()
 
 
 def rectangles_overlap(rect1, rect2):
