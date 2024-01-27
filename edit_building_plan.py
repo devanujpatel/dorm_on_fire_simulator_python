@@ -142,7 +142,7 @@ def rectangles_overlap(rect1, rect2):
     x1_rect2, y1_rect2, x2_rect2, y2_rect2 = rect2
 
     # Check for non-overlapping conditions
-    if x2_rect1 < x1_rect2 or x2_rect2 < x1_rect1 or y2_rect1 < y1_rect2 or y2_rect2 < y1_rect1:
+    if x2_rect1-1 < x1_rect2 or x2_rect2 < x1_rect1+1 or y2_rect1-1 < y1_rect2 or y2_rect2 < y1_rect1+1:
         return False
     else:
         return True
