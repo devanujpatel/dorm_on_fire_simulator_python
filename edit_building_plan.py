@@ -1,11 +1,9 @@
 from tkinter import *
-# from GUI_Tile import GUI_Tile
+from GUI_Tile import GUI_Tile
 from Rectangle import Rectangle
-from Tiles import Tile
 
 # from tkinter import messagebox, simpledialog
 
-divisions = 100
 
 all_tiles = {}
 all_rectangles = []
@@ -25,27 +23,20 @@ rect_start_x = None
 rect_start_y = None
 rect_id = None
 
-for i in range(divisions):
+for i in range(100):
     all_tiles[i] = {}
-    for j in range(divisions):
+    for j in range(100):
         all_tiles[i][j] = None
 
-# for x in range(divisions):
-#    for y in range(divisions):
-#        GUI_Tile(x, y, width, height, all_tiles)
+for x in range(100):
+    for y in range(100):
+        GUI_Tile(x, y, width, height, all_tiles)
 
 tempFlammable = False
 tempWalkable = False
 tempColor = None
 
-
 def ask_the_three_questions():
-    pass
-    # return a tuple: (flammability (True or False), walkability (True or False), color (a string)
-
-
-# consolidate the following three functions into the above one
-def ask_if_flammable():
     # Create a new top-level window
     padConstant = 30
     window = Toplevel(padx=padConstant, pady=padConstant)
@@ -55,102 +46,41 @@ def ask_if_flammable():
     print(positionstr)
     window.geometry(positionstr)
 
-    # Create a StringVar to hold the selected option
-    var = StringVar(window)
-    var.set("Yes")  # default value
+    # Create a StringVar for each question
+    flammable_var = StringVar(window)
+    flammable_var.set("Yes")  # default value
+    walkable_var = StringVar(window)
+    walkable_var.set("Yes")  # default value
+    color_var = StringVar(window)
+    color_var.set("Grey")  # default value
 
-    # Create a label
-    label = Label(window, text="Are the tiles flammable?")
-    label.pack()
+    # Create a label and dropdown menu for each question
+    flammable_label = Label(window, text="Are the tiles flammable?")
+    flammable_label.pack()
+    flammable_options = ["Yes", "No"]
+    flammable_dropdown = OptionMenu(window, flammable_var, *flammable_options)
+    flammable_dropdown.pack()
 
-    # Create a dropdown menu
-    options = ["Yes", "No"]
-    dropdown = OptionMenu(window, var, *options)
-    dropdown.pack()
+    walkable_label = Label(window, text="Are the tiles walkable?")
+    walkable_label.pack()
+    walkable_options = ["Yes", "No"]
+    walkable_dropdown = OptionMenu(window, walkable_var, *walkable_options)
+    walkable_dropdown.pack()
+
+    color_label = Label(window, text="Select area color: ")
+    color_label.pack()
+    color_options = ["Grey", "Blue", "Green", "Yellow", "Purple", "Black"]
+    color_dropdown = OptionMenu(window, color_var, *color_options)
+    color_dropdown.pack()
 
     # Create a function to be called when the button is clicked
     def on_button_click():
-        print("Selected option:", var.get())
-        if var.get() == "True":
-            tempFlammable = True
-        ask_if_walkable()
+        print("Selected options:", flammable_var.get(), walkable_var.get(), color_var.get())
         window.destroy()
 
     # Create an "OK" button
     button = Button(window, text="OK", command=on_button_click)
     button.pack()
-
-
-def ask_if_walkable():
-    # Create a new top-level window
-    padConstant = 30
-    window = Toplevel(padx=padConstant, pady=padConstant)
-    window.title("")
-    positionstr = "+" + '{:.0f}'.format((width / 2 - padConstant * 3)) + "+" + '{:.0f}'.format(
-        (height / 2 - padConstant * 3))
-    print(positionstr)
-    window.geometry(positionstr)
-
-    # Create a StringVar to hold the selected option
-    var = StringVar(window)
-    var.set("Yes")  # default value
-
-    # Create a label
-    label = Label(window, text="Are the tiles walkable?")
-    label.pack()
-
-    # Create a dropdown menu
-    options = ["Yes", "No"]
-    dropdown = OptionMenu(window, var, *options)
-    dropdown.pack()
-
-    # Create a function to be called when the button is clicked
-    def on_button_click():
-        if var.get() == "True":
-            tempWalkable = True
-        print("Selected option:", var.get())
-        ask_color()
-        window.destroy()
-
-    # Create an "OK" button
-    button = Button(window, text="OK", command=on_button_click)
-    button.pack()
-
-
-def ask_color():
-    # Create a new top-level window
-    padConstant = 30
-    window = Toplevel(padx=padConstant, pady=padConstant)
-    window.title("")
-    positionstr = "+" + '{:.0f}'.format((width / 2 - padConstant * 3)) + "+" + '{:.0f}'.format(
-        (height / 2 - padConstant * 3))
-    print(positionstr)
-    window.geometry(positionstr)
-
-    # Create a StringVar to hold the selected option
-    var = StringVar(window)
-    var.set("Grey")  # default value
-
-    # Create a label
-    label = Label(window, text="Select area color: ")
-    label.pack()
-
-    # Create a dropdown menu
-    options = ["Grey", "Blue", "Green", "Yellow", "Purple", "Black"]
-    dropdown = OptionMenu(window, var, *options)
-    dropdown.pack()
-
-    # Create a function to be called when the button is clicked
-    def on_button_click():
-        print("Selected option:", var.get())
-        tempColor = var.get()
-        print(tempColor)
-        window.destroy()
-
-    # Create an "OK" button
-    button = Button(window, text="OK", command=on_button_click)
-    button.pack()
-
 
 def on_press(event):
     global rect_start_x, rect_start_y, rect_id
@@ -180,7 +110,7 @@ def on_drag(event):
 
 
 def on_release(event):
-    global rect_start_x, rect_start_y, big_rectangle_id
+    global rect_start_x, rect_start_y
     # Get the coordinates of the selected region
     rect_end_x = my_canvas.canvasx(event.x)
     rect_end_y = my_canvas.canvasy(event.y)
@@ -209,8 +139,8 @@ def on_release(event):
 
     x = left_top_x
     y = left_top_y
-    width_of_tile = width / divisions
-    height_of_tile = height / divisions
+    width_of_tile = width / 100
+    height_of_tile = height / 100
 
     big_left_top_x = (x // width_of_tile) * width_of_tile
     big_left_top_y = (y // height_of_tile) * height_of_tile
@@ -226,23 +156,20 @@ def on_release(event):
         big_right_bottom_x,
         big_right_bottom_y)
 
-    print(big_left_top_x, big_left_top_y)
-    print(big_right_top_x, big_right_top_y)
-    print(big_left_bottom_x, big_left_bottom_y)
-    print(big_right_bottom_x, big_right_bottom_y)
+    # print(big_left_top_x, big_left_top_y)
+    # print(big_right_top_x, big_right_top_y)
+    # print(big_left_bottom_x, big_left_bottom_y)
+    # print(big_right_bottom_x, big_right_bottom_y)
 
     new_rectangle = Rectangle(big_left_top_x, big_left_top_y, big_right_top_x, big_right_top_y, big_left_bottom_x,
                               big_left_bottom_y, big_right_bottom_x, big_right_bottom_y)
 
-    flag = True
-
     if len(all_rectangles) == 0:
-        pass
-        # all_rectangles.append(new_rectangle)
-        # my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
-        #                            big_right_bottom_y, fill="blue")
-        # ask_if_flammable()
+        all_rectangles.append(new_rectangle)
+        my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
+                                   big_right_bottom_y, fill="blue")
     else:
+        flag = True
         for rectangle in all_rectangles:
             if rectangles_overlap(rectangle.get_coords(), new_rectangle.get_coords()):
                 pass
@@ -250,33 +177,16 @@ def on_release(event):
                 print("invalid")
                 flag = False
                 break
+
             else:
                 print("valid")
-    if flag:
-        all_rectangles.append(new_rectangle)
-        my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
-                                   big_right_bottom_y, fill="blue")
+        if flag:
+            all_rectangles.append(new_rectangle)
+            my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
+                                       big_right_bottom_y, fill="blue")
 
-        flammability = tempFlammable
-        walkability = tempWalkable
-        color = tempColor
-        # flammability, walkability, color = ask_the_three_questions()
-        starting_x = round(big_left_top_x / width_of_tile, 0)
-        starting_y = round(big_left_top_y / height_of_tile, 0)
+    ask_the_three_questions()
 
-        print("---")
-        print(starting_x, starting_y)
-
-        ending_x = round(big_right_bottom_x / width_of_tile, 0)
-        ending_y = round(big_right_bottom_y / height_of_tile, 0)
-
-        print(ending_x, ending_y)
-
-        for x_coord in range(int(starting_x), int(ending_x) + 1):
-            for y_coord in range(int(starting_y), int(ending_y) + 1):
-                all_tiles[x_coord][y_coord] = Tile(x_coord, y_coord, True, True, True, True, "Black", big_rectangle_id)
-
-    big_rectangle_id += 1
     # tempFlammable = None
     # tempWalkable = None
     # def dialog(var):
