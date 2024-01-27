@@ -1,5 +1,4 @@
 import heapq
-import sys
 
 class Person:
     def __init__(self, name, personal_traits=None, position=(0,0)):

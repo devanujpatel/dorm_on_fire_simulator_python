@@ -1,5 +1,7 @@
 from tkinter import *
 
+from GUI_Tile import GUI_Tile
+
 all_tiles = {}
 
 container = Tk()
@@ -12,33 +14,18 @@ container.winfo_toplevel().geometry("%dx%d%+d%+d" % (width, height, 0, 0))
 my_canvas = Canvas(container, width=width, height=height)
 my_canvas.pack(pady=20)
 
+rect_start_x = None
+rect_start_y = None
+rect_id = None
+
 for i in range(100):
     all_tiles[i] = {}
     for j in range(100):
         all_tiles[i][j] = None
 
-
-class GUI_Tile:
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.WIDTH = width / 100
-        self.HEIGHT = height / 100
-        all_tiles[x][y] = self
-        self.human_presence = 0
-
-    def __str__(self):
-        return self.human_presence
-
-
 for x in range(100):
     for y in range(100):
-        GUI_Tile(x, y)
-
-
-# making an invisible grid - filling it later
-# for i in range(200):
-#    Frame(container, width=width / 200, height=height / 200).grid(row=i, column=i)
+        GUI_Tile(x, y, width, height, all_tiles)
 
 def on_click(event):
     x = event.x
@@ -53,7 +40,63 @@ def on_click(event):
     all_tiles[x // width_of_tile][y // height_of_tile].human_presence += 1
 
 
-container.bind("<Button-1>", on_click)
+
+def on_release(self, event):
+    # Get the coordinates of the selected region
+    rect_end_x = self.canvas.canvasx(event.x)
+    rect_end_y = self.canvas.canvasy(event.y)
+
+    # Perform actions based on the selected region
+    selected_region_start = (self.rect_start_x, self.rect_start_y)
+    selected_region_end = (rect_end_x, rect_end_y)
+
+    print("Selected Region Start:", selected_region_start)
+    print("Selected Region End:", selected_region_end)
+
+    # Perform additional actions based on the selected region
+    # For example, you can highlight or process the selected items within the region
+
+
+def on_press(self, event):
+    self.rect_start_x = self.canvas.canvasx(event.x)
+    self.rect_start_y = self.canvas.canvasy(event.y)
+
+    # Remove previous rectangles
+    self.canvas.delete("rect")
+
+    # Create a new rectangle
+    self.rect_id = self.canvas.create_rectangle(
+        self.rect_start_x,
+        self.rect_start_y,
+        self.rect_start_x,
+        self.rect_start_y,
+        outline="black",
+        tags="rect",
+    )
+
+
+def on_drag(self, event):
+    cur_x = self.canvas.canvasx(event.x)
+    cur_y = self.canvas.canvasy(event.y)
+
+    # Update the rectangle size as the mouse is dragged
+    self.canvas.coords(self.rect_id, self.rect_start_x, self.rect_start_y, cur_x, cur_y)
+
+
+def on_release(self, event):
+    # Get the coordinates of the selected region
+    rect_end_x = self.canvas.canvasx(event.x)
+    rect_end_y = self.canvas.canvasy(event.y)
+
+    # Perform actions based on the selected region
+    selected_region_start = (self.rect_start_x, self.rect_start_y)
+    selected_region_end = (rect_end_x, rect_end_y)
+
+    print("Selected Region Start:", selected_region_start)
+    print("Selected Region End:", selected_region_end)
+
+
+# container.bind("<Button-1>", on_release())
 
 """
 tiles = {}
@@ -64,7 +107,9 @@ for x in range(200):
         tiles[x][y] = Label(container, text="D")
         tiles[x][y].grid(row=x, column=y)
 """
-
+my_canvas.bind("<ButtonPress-1>", on_press)
+my_canvas.bind("<B1-Motion>", on_drag)
+my_canvas.bind("<ButtonRelease-1>", on_release)
 container.mainloop()
 
 """
