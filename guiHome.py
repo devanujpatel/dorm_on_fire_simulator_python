@@ -8,9 +8,13 @@ root.winfo_toplevel().geometry("%dx%d%+d%+d" % (width, height, 0, 0))
 
 rootHeight = root.winfo_height()
 rootWidth = root.winfo_width()
-# Say you want it to be 20 pixels smaller
+
+# Frame to contain the buttons
 frame = Frame(root, height=rootHeight - 10, width=rootWidth - 10)
 frame.pack()
+
+button_font = ("Futura", 24)
+
 
 # all the frames stored
 newMapFrame = None
@@ -20,48 +24,32 @@ existingPlansFrame = None
 tempName = None
 e = None
 
-
-def myClick():
-    myLabel = Label(root, text=e.get())
-    myLabel.pack()
+# Button for the project label (non-clickable)
+projectButton = Button(frame, text="Dorm On Fire Simulation (DOFS)", font=("Futura", 30, "bold"),
+                       state=DISABLED, padx=100, pady=90)
+projectButton.pack(pady=80)
 
 
 def newMap():
     root.destroy()
-    from edit_building_plan import container
-
-
-    #newMapFrame = Frame(root, height=rootHeight - 10, width=rootWidth - 10)
-    #newMapFrame.pack()
-    #nameLabel = Label(newMapFrame, text="Enter Name of Map: ")
-    #nameLabel.pack()
-    #e = Entry(newMapFrame, width=50, bg="white")
-    #e.focus_set()
-
-    #def enterName():
-    #    tempName = e.get()
-    #    print(tempName)
-    #    root.destroy()
-    #    from edit_building_plan import container
-
-    #e.pack()
-    #submitButton = Button(newMapFrame, text="Submit", padx=5, pady=5, command=enterName)
-    #submitButton.pack()
-
-
+    import edit_building_plan
 def preloaded():
     frame.destroy()
     existingPlansFrame = Frame(root, height=rootHeight - 10, width=rootWidth - 10)
     existingPlansFrame.pack()
     # drop = ttk.Combobox(existingPlansFrame, value = "     ", "      ")
     # drop.current(0)
+def myClick():
+    myLabel = Label(root, text=e.get())
+    myLabel.pack()
 
 
 # Buttons
-myButton = Button(frame, text="Create New Map", padx=50, pady=50, command=newMap)
-myButton.pack()
+myButton = Button(frame, text="Create New Map", font=button_font, padx=120, pady=80, command=newMap)  # Replace with your actual command
+myButton.pack(side=LEFT, padx=(70,50), pady=(150, 10))
 
-myButton2 = Button(frame, text="Load Existing Map", padx=50, pady=50, command=preloaded)
-myButton2.pack()
+myButton2 = Button(frame, text="Load Existing Map",font=button_font, padx=120, pady=80, command=preloaded)  # Replace with your actual command
+myButton2.pack(side=RIGHT, padx=(70,50), pady=(150, 10))
 
+# Run the main loop
 root.mainloop()
