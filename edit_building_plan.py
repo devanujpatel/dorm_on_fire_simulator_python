@@ -40,6 +40,18 @@ def save_to_dat_file():
 
     def enterName():
         global container
+
+        exits = []
+        # get all exit coordinates
+        for tile in all_tiles_list:
+            print(tile.color)
+            if tile.color == "maroon":
+                exits.append(tile)
+
+        print("given exits:")
+        print(exits)
+        for tile in all_tiles_list:
+            tile.calculate_costs(exits)
         name = e.get()
         print(name)
         new_map_frame.destroy()
