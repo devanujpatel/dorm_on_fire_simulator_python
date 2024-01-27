@@ -2,7 +2,10 @@ from tkinter import *
 import pickle
 import preexistingMaps
 
-name = preexistingMaps.
+f = open("temp_for_file_name.txt", "r")
+name = f.read()
+print(name)
+f.close()
 root = Tk()
 root.title("")
 width = root.winfo_screenwidth()  # width of screen

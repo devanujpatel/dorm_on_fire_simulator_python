@@ -56,9 +56,6 @@ def preloaded():
     root.destroy()
     import preexistingMaps
 
-    # drop = ttk.Combobox(existingPlansFrame, value = "     ", "      ")
-    # drop.current(0)
-
 
 # Buttons
 myButton = Button(frame, text="Create New Map", padx=50, pady=50, command=newMap)

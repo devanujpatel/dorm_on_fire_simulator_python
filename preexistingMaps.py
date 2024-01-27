@@ -14,6 +14,17 @@ rootWidth = root.winfo_width()
 # Say you want it to be 20 pixels smaller
 frame = Frame(root, height=rootHeight - 10, width=rootWidth - 10)
 frame.pack()
+n = StringVar(frame)
+
+
+def on_button_click():
+    frame.destroy()
+    f = open("temp_for_file_name.txt", "w")
+    f.write(n.get())
+    f.close()
+    root.destroy()
+    import reading_building_plan
+
 
 def listOfExisting():
     # Create a StringVar for each question
@@ -30,10 +41,14 @@ def listOfExisting():
         dat_file_names = [os.path.basename(file) for file in dat_files]
         print(dat_file_names)
         var_options = dat_file_names
-        var_dropdown = OptionMenu(frame, var, *var_options)
+        n.set(var_options[0])
+        var_dropdown = OptionMenu(frame, n, *var_options)
         var_dropdown.pack()
+        button = Button(frame, text="OK", command=on_button_click)
+        button.pack()
     except Exception as e:
         print(f"Error: {e}")
+
 
 listOfExisting()
 
