@@ -16,6 +16,7 @@ frame.pack()
 
 button_font = ("Futura", 24)
 
+
 # all the frames stored
 newMapFrame = None
 existingPlansFrame = None
