@@ -24,7 +24,7 @@ class VerticesAndEdges:
                 self.tile_to_neighbouring_tiles_costs[tile][self.all_tiles_dict[x][y - 1]] = self.all_tiles_dict[x][y - 1].cost_imposed_on_weight
 
                 # top right
-            if x + 1 <= 99 and y - 1 >= 0 and self.all_tiles_dict[x - 1][y - 1] is not None and self.all_tiles_dict[x - 1][y - 1].walkable == True:
+            if x + 1 <= 99 and y - 1 >= 0 and self.all_tiles_dict[x + 1][y - 1] is not None and self.all_tiles_dict[x + 1][y - 1].walkable == True:
                 self.tile_to_neighbouring_tiles[tile].append(self.all_tiles_dict[x + 1][y - 1])
                 self.tile_to_neighbouring_tiles_costs[tile][self.all_tiles_dict[x + 1][y - 1]] = \
                 self.all_tiles_dict[x + 1][y - 1].cost_imposed_on_weight

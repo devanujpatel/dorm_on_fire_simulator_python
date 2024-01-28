@@ -69,7 +69,7 @@ def on_click(event):
         my_canvas.create_oval(x - 2, y - 2, x + 2, y + 2, fill="black", outline="black")
 
     else:
-        all_tiles_dict[x_coord][y_coord].set_on_fire(my_canvas, x, y, width_of_tile, height_of_tile)
+        all_tiles_dict[x_coord][y_coord].set_on_fire(my_canvas, x, y, width_of_tile, height_of_tile, "firebrick1")
         fire_list.append(all_tiles_dict[x_coord][y_coord])
 
 root.bind("<Button-1>", on_click)

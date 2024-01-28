@@ -27,9 +27,9 @@ class Tile:
         self.population -= 1
         self.cost_imposed_on_weight -= 100
 
-    def set_on_fire(self, canvas, x, y, width, height):
+    def set_on_fire(self, canvas, x, y, width, height, color):
         print(f"{x}, {y}, onfire")
-        canvas.create_rectangle(x, y, x + width , y + height, fill="OrangeRed2", outline = "OrangeRed2")
+        canvas.create_rectangle(x, y, x + width , y + height, fill=color, outline = "OrangeRed2")
 
         #canvas.create_oval(x - 5, y - 5, x + 5, y + 5, fill="OrangeRed2", outline="OrangeRed2")
         self.is_on_fire = True
