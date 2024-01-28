@@ -1,8 +1,10 @@
+import time
+
 from vertices_and_edges import VerticesAndEdges
 
 
 class Fire:
-    def __init__(self, fire_list, all_tiles_list, all_tiles_dict, canvas, width, height):
+    def __init__(self, fire_list, all_tiles_list, all_tiles_dict, canvas, width, height, fire_values):
         self.fire_list = fire_list
         self.all_tiles_list = all_tiles_list
         self.all_tiles_dict = all_tiles_dict
@@ -10,15 +12,17 @@ class Fire:
         self.canvas = canvas
         self.width = width
         self.height = height
+        self.fire_values = fire_values
 
     def spread_fire(self):
         # print("fire spread called")
         # print(self.fire_list)
         fire_list2 = []
         for tile in self.fire_list:
+            time.sleep(1)
             x = tile.x
             y = tile.y
-            tile.set_on_fire(self.canvas, x * self.width, y * self.height, self.width, self.height, "red2")
+            tile.set_on_fire(self.canvas, x * self.width, y * self.height, self.width, self.height, "red2", self.all_tiles_dict)
             # print(x, y)
             # print(tile.flammable)
             # top left cell
@@ -29,7 +33,7 @@ class Fire:
                 self.all_tiles_dict[x - 1][y - 1].set_on_fire(self.canvas,
                                                               self.all_tiles_dict[x - 1][y - 1].x * self.width,
                                                               self.all_tiles_dict[x - 1][y - 1].y * self.height,
-                                                              self.width, self.height, "deep sky blue")
+                                                              self.width, self.height, "deep sky blue", self.all_tiles_dict)
                 var = self.all_tiles_dict[x - 1][y - 1].x
                 var2 = self.all_tiles_dict[x - 1][y - 1].y
                 fire_list2.append(self.all_tiles_dict[x - 1][y - 1])
@@ -40,7 +44,7 @@ class Fire:
                 # print("past2")
                 self.all_tiles_dict[x][y - 1].set_on_fire(self.canvas, self.all_tiles_dict[x][y - 1].x * self.width,
                                                           self.all_tiles_dict[x][y - 1].y * self.height, self.width,
-                                                          self.height, "gold")
+                                                          self.height, "gold", self.all_tiles_dict)
                 fire_list2.append(self.all_tiles_dict[x][y - 1])
 
                 # top right
@@ -51,7 +55,7 @@ class Fire:
                 self.all_tiles_dict[x + 1][y - 1].set_on_fire(self.canvas,
                                                               self.all_tiles_dict[x + 1][y - 1].x * self.width,
                                                               self.all_tiles_dict[x + 1][y - 1].y * self.height,
-                                                              self.width, self.height, "burlywood4")
+                                                              self.width, self.height, "burlywood4", self.all_tiles_dict)
                 var = self.all_tiles_dict[x + 1][y - 1].x
                 var2 = self.all_tiles_dict[x + 1][y - 1].y
                 fire_list2.append(self.all_tiles_dict[x + 1][y - 1])
@@ -63,7 +67,7 @@ class Fire:
                 # rint("past4")
                 self.all_tiles_dict[x - 1][y].set_on_fire(self.canvas, self.all_tiles_dict[x - 1][y].x * self.width,
                                                           self.all_tiles_dict[x - 1][y].y * self.height, self.width,
-                                                          self.height, "indian red")
+                                                          self.height, "indian red", self.all_tiles_dict)
                 fire_list2.append(self.all_tiles_dict[x - 1][y])
 
             # same level right
@@ -72,7 +76,7 @@ class Fire:
                 # print("past5")
                 self.all_tiles_dict[x + 1][y].set_on_fire(self.canvas, self.all_tiles_dict[x + 1][y].x * self.width,
                                                           self.all_tiles_dict[x + 1][y].y * self.height, self.width,
-                                                          self.height, "orange")
+                                                          self.height, "orange", self.all_tiles_dict)
                 fire_list2.append(self.all_tiles_dict[x + 1][y])
 
             # bottom left
@@ -83,7 +87,7 @@ class Fire:
                 self.all_tiles_dict[x - 1][y + 1].set_on_fire(self.canvas,
                                                               self.all_tiles_dict[x - 1][y + 1].x * self.width,
                                                               self.all_tiles_dict[x - 1][y + 1].y * self.height,
-                                                              self.width, self.height, "hot pink")
+                                                              self.width, self.height, "hot pink", self.all_tiles_dict)
                 fire_list2.append(self.all_tiles_dict[x - 1][y + 1])
 
             # same column bottom down
@@ -92,7 +96,7 @@ class Fire:
                 # print("past7")
                 self.all_tiles_dict[x][y + 1].set_on_fire(self.canvas, self.all_tiles_dict[x][y + 1].x * self.width,
                                                           self.all_tiles_dict[x][y + 1].y * self.height, self.width,
-                                                          self.height, "dark violet")
+                                                          self.height, "dark violet", self.all_tiles_dict)
                 fire_list2.append(self.all_tiles_dict[x][y + 1])
 
             # bottom right
@@ -103,7 +107,7 @@ class Fire:
                 self.all_tiles_dict[x + 1][y + 1].set_on_fire(self.canvas,
                                                               self.all_tiles_dict[x + 1][y + 1].x * self.width,
                                                               self.all_tiles_dict[x + 1][y + 1].y * self.height,
-                                                              self.width, self.height, "khaki")
+                                                              self.width, self.height, "khaki", self.all_tiles_dict)
                 fire_list2.append(self.all_tiles_dict[x + 1][y + 1])
         # for tile in self.fire_list:
         # print(tile.x, tile.y,)
@@ -112,6 +116,14 @@ class Fire:
         self.fire_list.clear()
         # print(self.fire_list)
         self.fire_list.extend(fire_list2)
+
+        for t in self.fire_list:
+            if t in self.fire_list:
+                self.fire_values[t] += 3000
+            else:
+                self.fire_values[t] = 3000
+        print("if seeing then no errors in fire.py!")
         # print(self.fire_list)
         if len(self.fire_list) != 0:
+            time.sleep(1)
             self.spread_fire()

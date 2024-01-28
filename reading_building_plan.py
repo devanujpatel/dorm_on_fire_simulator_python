@@ -15,7 +15,12 @@ height = root.winfo_screenheight()  # height of screen
 divisions = 100
 width_of_tile = width / divisions
 height_of_tile = height / divisions
+totalSurvivors = 0
+casualities = 0
+
 fire_list = []
+fire_values = {}
+
 humans_list = []
 
 root.winfo_toplevel().geometry("%dx%d%+d%+d" % (width, height, 0, 0))
@@ -30,9 +35,9 @@ fire_button.pack(side=TOP, padx=10)
 
 
 def fire_thread_task():
-    global fire_list, all_tiles_dict, all_tiles_list
+    global fire_list, all_tiles_dict, all_tiles_list, fire_values
 
-    spreader = Fire(fire_list, all_tiles_list, all_tiles_dict, my_canvas, width_of_tile, height_of_tile)
+    spreader = Fire(fire_list, all_tiles_list, all_tiles_dict, my_canvas, width_of_tile, height_of_tile, fire_values)
     spreader.spread_fire()
 
 
@@ -47,19 +52,21 @@ def human_thread_task():
 
 
 def submit():
+    global humans_list, all_tiles_dict, all_tiles_list, humans_list, my_canvas, width_of_tile, height_of_tile
     root.unbind("<Button-1>")
     human_button.destroy()
     fire_button.destroy()
     subButton.destroy()
-
+    for tile in all_tiles_list:
+        print(tile.cost_imposed_on_weight)
     # start fire thread
     fire_thread = threading.Thread(target=fire_thread_task)
     fire_thread.start()
 
     # make multiple threads for humans
     for human in humans_list:
-        human_thread = threading.Thread(target=human_thread_task)
-        human_thread.start()
+        person = Person(human[0], human[1], all_tiles_list, all_tiles_dict, my_canvas, width_of_tile, height_of_tile, fire_values)
+        person.start()
 
 
 subButton = Button(root, text="Submit", command=submit)
@@ -96,11 +103,13 @@ def on_click(event):
                                    x_coord * width_of_tile + width_of_tile,
                                    y_coord * height_of_tile + height_of_tile, fill="maroon",
                                    outline="black")
-        humans_list.append(
-            Person(x_coord, y_coord, all_tiles_list, all_tiles_dict, my_canvas, width_of_tile, height_of_tile))
+        humans_list.append([x_coord, y_coord])
+            #Person(x_coord, y_coord, all_tiles_list, all_tiles_dict, my_canvas, width_of_tile, height_of_tile))
     else:
-        all_tiles_dict[x_coord][y_coord].set_on_fire(my_canvas, x, y, width_of_tile, height_of_tile, "firebrick1")
+        all_tiles_dict[x_coord][y_coord].set_on_fire(my_canvas, x, y, width_of_tile, height_of_tile, "firebrick1", all_tiles_dict)
         fire_list.append(all_tiles_dict[x_coord][y_coord])
+        fire_values[all_tiles_dict[x_coord][y_coord]] = 3000;
+
 
 
 root.bind("<Button-1>", on_click)
