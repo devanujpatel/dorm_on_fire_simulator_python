@@ -1,3 +1,4 @@
+import threading
 from tkinter import *
 import pickle
 from Fire import Fire
@@ -26,15 +27,21 @@ fire_button = Radiobutton(root, text="Fire", variable=var, value="fire")
 fire_button.pack(side=TOP, padx=10)
 
 
-def submit():
+def my_function():
     global fire_list, all_tiles_dict, all_tiles_list
+
+    spreader = Fire(fire_list, all_tiles_list, all_tiles_dict, my_canvas, width_of_tile, height_of_tile)
+    spreader.spread_fire()
+
+
+def submit():
     root.unbind("<Button-1>")
     human_button.destroy()
     fire_button.destroy()
     subButton.destroy()
-    print(fire_list)
-    spreader = Fire(fire_list, all_tiles_list, all_tiles_dict, my_canvas, width_of_tile, height_of_tile)
-    spreader.spread_fire()
+
+    my_thread = threading.Thread(target=my_function)
+    my_thread.start()
 
 
 subButton = Button(root, text="Submit", command=submit)
@@ -71,6 +78,7 @@ def on_click(event):
     else:
         all_tiles_dict[x_coord][y_coord].set_on_fire(my_canvas, x, y, width_of_tile, height_of_tile, "firebrick1")
         fire_list.append(all_tiles_dict[x_coord][y_coord])
+
 
 root.bind("<Button-1>", on_click)
 
