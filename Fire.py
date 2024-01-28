@@ -2,69 +2,69 @@ import random
 import time
 from vertices_and_edges import VerticesAndEdges
 class Fire:
-    def __init__(self, input_fire_tiles, all_tiles_list, all_tiles_dict):
-        self.fireTiles = input_fire_tiles
+    def __init__(self, fire_list, all_tiles_list, all_tiles_dict):
+        self.fire_list = fire_list
         self.all_tiles_list = all_tiles_list
         self.all_tiles_dict = all_tiles_dict
         self.dataset = VerticesAndEdges(self.all_tiles_list, self.all_tiles_dict)
-
 
     # Method to start the fire simulation
     def start_fire(self):
         print("Fire simulation started.")
 
-    # Method to spread the fire based on factors
     def spread_fire(self):
-        time.sleep(5)
-        x = self.x
-        y = self.y
-        # top left cell
-        if x - 1 >= 0 and y - 1 >= 0 and self.all_tiles_dict[x - 1][y - 1] is not None and self.all_tiles_dict[x - 1][
-            y - 1].flammable == True:
-            self.all_tiles_dict[x - 1][y - 1].set_on_fire()
-            self.input_fire_tiles.append(self.all_tiles_dict[x - 1][y - 1])
+        time.sleep(1)
+        fire_list2 = []
+        for tile in self.fire_list:
+            time.sleep(3)
+            x = tile.x
+            y = tile.y
+            # top left cell
+            if x - 1 >= 0 and y - 1 >= 0 and self.all_tiles_dict[x - 1][y - 1] is not None and self.all_tiles_dict[x - 1][
+                y - 1].flammable == True:
+                self.all_tiles_dict[x - 1][y - 1].set_on_fire()
+                fire_list2.append(self.all_tiles_dict[x - 1][y - 1])
 
-            # top up same column
-        if y - 1 >= 0 and self.all_tiles_dict[x][y - 1] is not None and self.all_tiles_dict[x][y - 1].flammable == True:
-            self.all_tiles_dict[x][y - 1].set_on_fire()
-            self.input_fire_tiles.append(self.all_tiles_dict[x][y - 1])
+                # top up same column
+            if y - 1 >= 0 and self.all_tiles_dict[x][y - 1] is not None and self.all_tiles_dict[x][y - 1].flammable == True:
+                self.all_tiles_dict[x][y - 1].set_on_fire()
+                fire_list2.append(self.all_tiles_dict[x][y - 1])
 
-            # top right
-        if x + 1 <= 99 and y - 1 >= 0 and self.all_tiles_dict[x - 1][y - 1] is not None and self.all_tiles_dict[x - 1][
-            y - 1].flammable == True:
-            self.all_tiles_dict[x - 1][y - 1].set_on_fire()
-            self.input_fire_tiles.append(self.all_tiles_dict[x - 1][y - 1])
+                # top right
+            if x + 1 <= 99 and y - 1 >= 0 and self.all_tiles_dict[x - 1][y - 1] is not None and self.all_tiles_dict[x - 1][
+                y - 1].flammable == True:
+                self.all_tiles_dict[x - 1][y - 1].set_on_fire()
+                fire_list2.append(self.all_tiles_dict[x - 1][y - 1])
 
-            # same level left
-        if x - 1 >= 0 and self.all_tiles_dict[x - 1][y] is not None and self.all_tiles_dict[x - 1][y].flammable == True:
-            self.all_tiles_dict[x - 1][y].set_on_fire()
-            self.input_fire_tiles.append(self.all_tiles_dict[x - 1][y])
+                # same level left
+            if x - 1 >= 0 and self.all_tiles_dict[x - 1][y] is not None and self.all_tiles_dict[x - 1][y].flammable == True:
+                self.all_tiles_dict[x - 1][y].set_on_fire()
+                fire_list2.append(self.all_tiles_dict[x - 1][y])
 
-            # same level right
-        if x + 1 <= 99 and self.all_tiles_dict[x + 1][y] is not None and self.all_tiles_dict[x + 1][y].flammable == True:
-            self.all_tiles_dict[x + 1][y].set_on_fire()
-            self.input_fire_tiles.append(self.all_tiles_dict[x + 1][y])
+                # same level right
+            if x + 1 <= 99 and self.all_tiles_dict[x + 1][y] is not None and self.all_tiles_dict[x + 1][y].flammable == True:
+                self.all_tiles_dict[x + 1][y].set_on_fire()
+                fire_list2.append(self.all_tiles_dict[x + 1][y])
 
-            # bottom left
-        if x - 1 >= 0 and y + 1 <= 99 and self.all_tiles_dict[x - 1][y + 1] is not None and self.all_tiles_dict[x - 1][
-            y + 1].flammable == True:
-            self.all_tiles_dict[x - 1][y + 1].set_on_fire()
-            self.input_fire_tiles.append(self.all_tiles_dict[x - 1][y + 1])
+                # bottom left
+            if x - 1 >= 0 and y + 1 <= 99 and self.all_tiles_dict[x - 1][y + 1] is not None and self.all_tiles_dict[x - 1][
+                y + 1].flammable == True:
+                self.all_tiles_dict[x - 1][y + 1].set_on_fire()
+                fire_list2.append(self.all_tiles_dict[x - 1][y + 1])
 
-        # same column bottom down
-        if y + 1 <= 99 and self.all_tiles_dict[x][y + 1] is not None and self.all_tiles_dict[x][y + 1].flammable == True:
-            self.all_tiles_dict[x][y + 1].set_on_fire()
-            self.input_fire_tiles.append(self.all_tiles_dict[x][y + 1])
+            # same column bottom down
+            if y + 1 <= 99 and self.all_tiles_dict[x][y + 1] is not None and self.all_tiles_dict[x][y + 1].flammable == True:
+                self.all_tiles_dict[x][y + 1].set_on_fire()
+                fire_list2.append(self.all_tiles_dict[x][y + 1])
 
-        # bottom right
-        if x + 1 <= 99 and y + 1 <= 99 and self.all_tiles_dict[x + 1][y + 1] is not None and self.all_tiles_dict[x + 1][
-            y + 1].flammable == True:
-            self.all_tiles_dict[x + 1][y + 1].set_on_fire()
-            self.input_fire_tiles.append(self.all_tiles_dict[x + 1][y + 1])
+            # bottom right
+            if x + 1 <= 99 and y + 1 <= 99 and self.all_tiles_dict[x + 1][y + 1] is not None and self.all_tiles_dict[x + 1][
+                y + 1].flammable == True:
+                self.all_tiles_dict[x + 1][y + 1].set_on_fire()
+                fire_list2.append(self.all_tiles_dict[x + 1][y + 1])
 
-        self.input_fire_tiles.pop(0)
-        self.input_fire_tiles[0].spread_fire()
-
+        self.fire_list = [].extend(fire_list2)
+        self.spread_fire()
 
     # Method to consume building material
     def consume_material(self, material):
@@ -253,14 +253,3 @@ class Fire:
         self.intensity += time_factor * 5  # Adjust intensity based on time factor
         print(f"Fire behavior is changing over time. Intensity: {self.intensity}")
 
-    # Method to simulate the impact of various building materials on fire spread
-    def simulate_fire_spread_with_building_materials(self, materials):
-        for material in materials:
-            if material.lower() == "flammable":
-                self.intensity += 7
-                print("Flammable material is increasing fire intensity.")
-            elif material.lower() == "nonflammable":
-                self.intensity -= 4
-                print("Nonflammable material is reducing fire intensity.")
-            else:
-                print("Unknown building material. No significant impact on fire intensity.")

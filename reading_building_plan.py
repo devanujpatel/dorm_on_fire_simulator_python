@@ -1,5 +1,6 @@
 from tkinter import *
 import pickle
+from Fire import Fire
 
 f = open("temp_for_file_name.txt", "r")
 name = f.read()
@@ -12,6 +13,8 @@ height = root.winfo_screenheight()  # height of screen
 divisions = 100
 width_of_tile = width / divisions
 height_of_tile = height / divisions
+fire_list = []
+
 root.winfo_toplevel().geometry("%dx%d%+d%+d" % (width, height, 0, 0))
 
 radio_selection = "human"
@@ -28,6 +31,9 @@ def submit():
     human_button.destroy()
     fire_button.destroy()
     subButton.destroy()
+
+    spreader = Fire(fire_list, all_tiles_list, all_tiles_dict)
+
 
 
 subButton = Button(root, text="Submit", command=submit)
@@ -52,9 +58,10 @@ for tile in all_tiles_list:
 
 
 def on_click(event):
+    global radio_selection, fire_list
     x, y = event.x, event.y
-    x_coord = x // width_of_tile
-    y_coord = y // height_of_tile
+    x_coord = int(x / width_of_tile)
+    y_coord = int(y / height_of_tile)
     radio_selection = var.get()
     if radio_selection == "human":
         all_tiles_dict[x_coord][y_coord].increment_population()
@@ -63,6 +70,7 @@ def on_click(event):
     else:
         try:
             all_tiles_dict[x_coord][y_coord].set_on_fire()
+            fire_list.append[all_tiles_dict[x_coord][y_coord]]
             my_canvas.create_oval(x - 5, y - 5, x + 5, y + 5, fill="OrangeRed2", outline="OrangeRed2")
         except:
             pass

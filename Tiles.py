@@ -1,5 +1,5 @@
 import math
-
+import time
 
 def calculate_distance(x1, y1, x2, y2):
     distance = math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
@@ -17,14 +17,15 @@ class Tile:
         self.population = 0
         self.id = id
         self.cost_imposed_on_weight = 0
+        #self.all_tile_dicts = all_tiles_dict
 
     def increment_population(self):
         self.population += 1
-        self.cost_imposed_on_weight += 50
+        self.cost_imposed_on_weight += 100
 
     def decrement_population(self):
         self.population -= 1
-        self.cost_imposed_on_weight -= 10
+        self.cost_imposed_on_weight -= 100
 
     def set_on_fire(self):
         self.flammable = True

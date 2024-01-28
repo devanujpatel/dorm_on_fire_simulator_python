@@ -166,8 +166,8 @@ def further_process(big_left_top_x, big_left_top_y, big_right_bottom_x, big_righ
 
     print(ending_x, ending_y)
 
-    for x_coord in range(int(starting_x), int(ending_x) + 1):
-        for y_coord in range(int(starting_y), int(ending_y) + 1):
+    for x_coord in range(int(starting_x), int(ending_x)):
+        for y_coord in range(int(starting_y), int(ending_y)):
             all_tiles[x_coord][y_coord] = Tile(x_coord, y_coord, tempWalkable, tempFlammable, False, False,
                                                tempColor,
                                                big_rectangle_id)
@@ -268,7 +268,7 @@ def on_drag(event):
 
 
 def on_release(event):
-    global rect_start_x, rect_start_y, big_rectangle_id
+    global rect_start_x, rect_start_y, big_rectangle_id, my_canvas
     # Get the coordinates of the selected region
     rect_end_x = my_canvas.canvasx(event.x)
     rect_end_y = my_canvas.canvasy(event.y)
@@ -306,8 +306,8 @@ def on_release(event):
     x = right_bottom_x
     y = right_bottom_y
 
-    big_right_bottom_x = ((x // width_of_tile) + 1) * width_of_tile
-    big_right_bottom_y = ((y // height_of_tile) + 1) * height_of_tile
+    big_right_bottom_x = ((x // width_of_tile)+1) * width_of_tile
+    big_right_bottom_y = ((y // height_of_tile)+1) * height_of_tile
 
     big_right_top_x, big_right_top_y, big_left_bottom_x, big_left_bottom_y = calculate_rt_and_lb_coordinates(
         big_left_top_x, big_left_top_y,
@@ -383,24 +383,10 @@ def rectangles_overlap(rect1, rect2):
     else:
         return True
 
-
 def calculate_rt_and_lb_coordinates(x1, y1, x2, y2):
     x3, y3 = x2, y1  # Right-top coordinate
     x4, y4 = x1, y2  # Left-bottom coordinate
     return x3, y3, x4, y4
-
-
-# container.bind("<Button-1>", on_release())
-
-"""
-tiles = {}
-
-for x in range(200):
-    tiles[x] = {}
-    for y in range(200):
-        tiles[x][y] = Label(container, text="D")
-        tiles[x][y].grid(row=x, column=y)
-"""
 
 container.bind("<ButtonPress-1>", on_press)
 container.bind("<B1-Motion>", on_drag)
