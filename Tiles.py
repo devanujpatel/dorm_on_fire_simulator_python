@@ -27,18 +27,18 @@ class Tile:
         self.population -= 1
         self.cost_imposed_on_weight -= 100
 
-    def set_on_fire(self):
-        self.flammable = True
+    def set_on_fire(self, canvas, x, y):
+        print(f"{x}, {y}, onfire")
+        canvas.create_oval(x - 5, y - 5, x + 5, y + 5, fill="OrangeRed2", outline="OrangeRed2")
+        self.is_on_fire = True
         self.cost_imposed_on_weight += 500
+
 
     def is_walkable(self):
         return self.walkable
 
     def is_flammable(self):
         return self.flammable
-
-    def is_on_fire(self):
-        return self.is_on_fire
 
     def has_human(self):
         return self.has_human

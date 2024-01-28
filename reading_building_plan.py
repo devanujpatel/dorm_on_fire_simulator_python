@@ -27,13 +27,14 @@ fire_button.pack(side=TOP, padx=10)
 
 
 def submit():
+    global fire_list, all_tiles_dict, all_tiles_list
     root.unbind("<Button-1>")
     human_button.destroy()
     fire_button.destroy()
     subButton.destroy()
-
-    spreader = Fire(fire_list, all_tiles_list, all_tiles_dict)
-
+    print(fire_list)
+    spreader = Fire(fire_list, all_tiles_list, all_tiles_dict, my_canvas)
+    spreader.spread_fire()
 
 
 subButton = Button(root, text="Submit", command=submit)
@@ -58,7 +59,7 @@ for tile in all_tiles_list:
 
 
 def on_click(event):
-    global radio_selection, fire_list
+    global radio_selection, fire_list, all_tiles_dict
     x, y = event.x, event.y
     x_coord = int(x / width_of_tile)
     y_coord = int(y / height_of_tile)
@@ -69,9 +70,9 @@ def on_click(event):
 
     else:
         try:
-            all_tiles_dict[x_coord][y_coord].set_on_fire()
-            fire_list.append[all_tiles_dict[x_coord][y_coord]]
-            my_canvas.create_oval(x - 5, y - 5, x + 5, y + 5, fill="OrangeRed2", outline="OrangeRed2")
+            all_tiles_dict[x_coord][y_coord].set_on_fire(my_canvas, x, y)
+            #my_canvas.create_oval(x - 5, y - 5, x + 5, y + 5, fill="OrangeRed2", outline="OrangeRed2")
+            fire_list.append(all_tiles_dict[x_coord][y_coord])
         except:
             pass
 
