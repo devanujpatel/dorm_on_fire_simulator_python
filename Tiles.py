@@ -27,20 +27,8 @@ class Tile:
         self.cost_imposed_on_weight -= 10
 
     def set_on_fire(self):
-        self.flammable = True
+        self.is_on_fire = True
         self.cost_imposed_on_weight += 500
-
-    def is_walkable(self):
-        return self.walkable
-
-    def is_flammable(self):
-        return self.flammable
-
-    def is_on_fire(self):
-        return self.is_on_fire
-
-    def has_human(self):
-        return self.has_human
 
     def get_location(self):
         return self.x, self.y
@@ -53,7 +41,14 @@ class Tile:
             if min_dist == 123456:
                 min_dist_exit = each_exit
             elif calculate_distance(self.x, self.y, each_exit.x, each_exit.y) < min_dist_exit:
-                min_dist_exit = calculate_distance(self.x, self.y, each_exit.x, each_exit.y)
+                min_dist = calculate_distance(self.x, self.y, each_exit.x, each_exit.y)
                 min_dist_exit = each_exit
 
         self.cost_imposed_on_weight = calculate_distance(self.x, self.y, min_dist_exit.x, min_dist_exit.y)
+
+    def put_human_on_tile(self, canvas, x, y):
+        if not self.is_on_fire:
+            canvas.create_oval(x - 2, y - 2, x + 2, y + 2, fill="black", outline="black")
+
+    def remove_human_on_tile(self, canvas, x, y):
+        canvas.create_oval(x - 2, y - 2, x + 2, y + 2, fill="black", outline="black")

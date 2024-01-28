@@ -10,8 +10,8 @@ root.title("")
 width = root.winfo_screenwidth()  # width of screen
 height = root.winfo_screenheight()  # height of screen
 divisions = 100
-width_of_tile = width / divisions
-height_of_tile = height / divisions
+width_of_tile = width // divisions
+height_of_tile = height // divisions
 root.winfo_toplevel().geometry("%dx%d%+d%+d" % (width, height, 0, 0))
 
 radio_selection = "human"
@@ -45,20 +45,26 @@ print("Canvas Dimensions:", my_canvas.winfo_width(), my_canvas.winfo_height())
 print(width, height)
 
 for tile in all_tiles_list:
-    location = tile.get_location()
-    my_canvas.create_rectangle(location[0] * width_of_tile, location[1] * height_of_tile,
-                               location[0] * width_of_tile + width_of_tile,
-                               location[1] * height_of_tile + height_of_tile, fill=tile.color, outline=tile.color)
+    my_canvas.create_rectangle(tile.x * width_of_tile, tile.y * height_of_tile,
+                               tile.x * width_of_tile + width_of_tile,
+                               tile.y * height_of_tile + height_of_tile, fill=tile.color, outline=tile.color)
 
 
 def on_click(event):
+    global radio_selection
     x, y = event.x, event.y
-    x_coord = x // width_of_tile
-    y_coord = y // height_of_tile
+    x_coord = int(x / width_of_tile)
+    y_coord = int(y / height_of_tile)
+
     radio_selection = var.get()
+
+    print(all_tiles_dict)
+    print("look here")
+    print(x_coord, y_coord)
+
     if radio_selection == "human":
         all_tiles_dict[x_coord][y_coord].increment_population()
-        my_canvas.create_oval(x - 2, y - 2, x + 2, y + 2, fill="black", outline="black")
+        all_tiles_dict[x_coord][y_coord].put_human_on_tile(my_canvas, x, y)
     else:
         try:
             all_tiles_dict[x_coord][y_coord].set_on_fire()
