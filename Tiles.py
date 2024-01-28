@@ -28,7 +28,7 @@ class Tile:
         self.cost_imposed_on_weight -= 100
 
     def set_on_fire(self, canvas, x, y, width, height, color):
-        print(f"{x}, {y}, onfire")
+        #print(f"{x}, {y}, onfire")
         canvas.create_rectangle(x, y, x + width , y + height, fill=color, outline = "OrangeRed2")
 
         #canvas.create_oval(x - 5, y - 5, x + 5, y + 5, fill="OrangeRed2", outline="OrangeRed2")
@@ -51,7 +51,7 @@ class Tile:
     def calculate_costs(self, exits):
         min_dist = 123456
         min_dist_exit = None
-        print(exits)
+        #print(exits)
         for each_exit in exits:
             if min_dist == 123456:
                 min_dist_exit = each_exit
