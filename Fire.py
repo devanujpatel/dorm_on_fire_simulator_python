@@ -2,12 +2,14 @@ import random
 import time
 from vertices_and_edges import VerticesAndEdges
 class Fire:
-    def __init__(self, fire_list, all_tiles_list, all_tiles_dict, canvas):
+    def __init__(self, fire_list, all_tiles_list, all_tiles_dict, canvas, width, height):
         self.fire_list = fire_list
         self.all_tiles_list = all_tiles_list
         self.all_tiles_dict = all_tiles_dict
         self.dataset = VerticesAndEdges(self.all_tiles_list, self.all_tiles_dict)
         self.canvas = canvas
+        self.width = width
+        self.height = height
 
     # Method to start the fire simulation
     def start_fire(self):
@@ -25,53 +27,57 @@ class Fire:
             # top left cell
             if x - 1 >= 0 and y - 1 >= 0 and self.all_tiles_dict[x - 1][y - 1] is not None and self.all_tiles_dict[x - 1][
                 y - 1].flammable == "Yes":
-                print("past")
-                self.all_tiles_dict[x - 1][y - 1].set_on_fire(self.canvas, self.all_tiles_dict[x - 1][y - 1].x, self.all_tiles_dict[x - 1][y - 1].y)
+                print("past1")
+                self.all_tiles_dict[x - 1][y - 1].set_on_fire(self.canvas, self.all_tiles_dict[x - 1][y - 1].x * self.width, self.all_tiles_dict[x - 1][y - 1].y*self.height, self.width, self.height)
+                var = self.all_tiles_dict[x - 1][y - 1].x
+                var2 = self.all_tiles_dict[x - 1][y - 1].y
                 fire_list2.append(self.all_tiles_dict[x - 1][y - 1])
 
                 # top up same column
             if y - 1 >= 0 and self.all_tiles_dict[x][y - 1] is not None and self.all_tiles_dict[x][y - 1].flammable == "Yes":
-                print("past")
-                self.all_tiles_dict[x][y - 1].set_on_fire(self.canvas, self.all_tiles_dict[x][y - 1].x, self.all_tiles_dict[x][y - 1].y)
+                print("past2")
+                self.all_tiles_dict[x][y - 1].set_on_fire(self.canvas, self.all_tiles_dict[x][y - 1].x * self.width, self.all_tiles_dict[x][y - 1].y*self.height, self.width, self.height)
                 fire_list2.append(self.all_tiles_dict[x][y - 1])
 
                 # top right
-            if x + 1 <= 99 and y - 1 >= 0 and self.all_tiles_dict[x - 1][y - 1] is not None and self.all_tiles_dict[x - 1][
+            if x + 1 <= 99 and y - 1 >= 0 and self.all_tiles_dict[x + 1][y - 1] is not None and self.all_tiles_dict[x + 1][
                 y - 1].flammable == "Yes":
-                print("past")
-                self.all_tiles_dict[x - 1][y - 1].set_on_fire(self.canvas, self.all_tiles_dict[x - 1][y - 1].x, self.all_tiles_dict[x - 1][y - 1].x)
-                fire_list2.append(self.all_tiles_dict[x - 1][y - 1])
+                print("past3")
+                self.all_tiles_dict[x + 1][y - 1].set_on_fire(self.canvas, self.all_tiles_dict[x + 1][y - 1].x * self.width, self.all_tiles_dict[x + 1][y - 1].x*self.height, self.width, self.height)
+                var = self.all_tiles_dict[x + 1][y - 1].x
+                var2 = self.all_tiles_dict[x + 1][y - 1].y
+                fire_list2.append(self.all_tiles_dict[x + 1][y - 1])
 
                 # same level left
             if x - 1 >= 0 and self.all_tiles_dict[x - 1][y] is not None and self.all_tiles_dict[x - 1][y].flammable == "Yes":
-                print("past")
-                self.all_tiles_dict[x - 1][y].set_on_fire(self.canvas, self.all_tiles_dict[x - 1][y].x, self.all_tiles_dict[x - 1][y].y)
+                print("past4")
+                self.all_tiles_dict[x - 1][y].set_on_fire(self.canvas, self.all_tiles_dict[x - 1][y].x * self.width, self.all_tiles_dict[x - 1][y].y*self.height, self.width, self.height)
                 fire_list2.append(self.all_tiles_dict[x - 1][y])
 
                 # same level right
             if x + 1 <= 99 and self.all_tiles_dict[x + 1][y] is not None and self.all_tiles_dict[x + 1][y].flammable == "Yes":
-                print("past")
-                self.all_tiles_dict[x + 1][y].set_on_fire(self.canvas, self.all_tiles_dict[x + 1][y].x, self.all_tiles_dict[x + 1][y].y)
+                print("past5")
+                self.all_tiles_dict[x + 1][y].set_on_fire(self.canvas, self.all_tiles_dict[x + 1][y].x * self.width, self.all_tiles_dict[x + 1][y].y*self.height, self.width, self.height)
                 fire_list2.append(self.all_tiles_dict[x + 1][y])
 
                 # bottom left
             if x - 1 >= 0 and y + 1 <= 99 and self.all_tiles_dict[x - 1][y + 1] is not None and self.all_tiles_dict[x - 1][
                 y + 1].flammable == "Yes":
-                print("past")
-                self.all_tiles_dict[x - 1][y + 1].set_on_fire(self.canvas, self.all_tiles_dict[x - 1][y + 1].x, self.all_tiles_dict[x - 1][y + 1].y )
+                print("past6")
+                self.all_tiles_dict[x - 1][y + 1].set_on_fire(self.canvas, self.all_tiles_dict[x - 1][y + 1].x * self.width, self.all_tiles_dict[x - 1][y + 1].y*self.height, self.width, self.height)
                 fire_list2.append(self.all_tiles_dict[x - 1][y + 1])
 
             # same column bottom down
             if y + 1 <= 99 and self.all_tiles_dict[x][y + 1] is not None and self.all_tiles_dict[x][y + 1].flammable == "Yes":
-                print("past")
-                self.all_tiles_dict[x][y + 1].set_on_fire(self.canvas, self.all_tiles_dict[x][y + 1].x, self.all_tiles_dict[x][y + 1].y)
+                print("past7")
+                self.all_tiles_dict[x][y + 1].set_on_fire(self.canvas, self.all_tiles_dict[x][y + 1].x * self.width, self.all_tiles_dict[x][y + 1].y*self.height, self.width, self.height)
                 fire_list2.append(self.all_tiles_dict[x][y + 1])
 
             # bottom right
             if x + 1 <= 99 and y + 1 <= 99 and self.all_tiles_dict[x + 1][y + 1] is not None and self.all_tiles_dict[x + 1][
                 y + 1].flammable == "Yes":
-                print("past")
-                self.all_tiles_dict[x + 1][y + 1].set_on_fire(self.canvas, self.all_tiles_dict[x + 1][y + 1].x,  self.all_tiles_dict[x + 1][y + 1].y)
+                print("past8")
+                self.all_tiles_dict[x + 1][y + 1].set_on_fire(self.canvas, self.all_tiles_dict[x + 1][y + 1].x * self.width,  self.all_tiles_dict[x + 1][y + 1].y*self.height, self.width, self.height)
                 fire_list2.append(self.all_tiles_dict[x + 1][y + 1])
         for tile in self.fire_list:
             print(tile.x, tile.y,)

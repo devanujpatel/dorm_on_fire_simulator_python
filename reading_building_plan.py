@@ -33,7 +33,7 @@ def submit():
     fire_button.destroy()
     subButton.destroy()
     print(fire_list)
-    spreader = Fire(fire_list, all_tiles_list, all_tiles_dict, my_canvas)
+    spreader = Fire(fire_list, all_tiles_list, all_tiles_dict, my_canvas, width_of_tile, height_of_tile)
     spreader.spread_fire()
 
 
@@ -69,12 +69,8 @@ def on_click(event):
         my_canvas.create_oval(x - 2, y - 2, x + 2, y + 2, fill="black", outline="black")
 
     else:
-        try:
-            all_tiles_dict[x_coord][y_coord].set_on_fire(my_canvas, x, y)
-            #my_canvas.create_oval(x - 5, y - 5, x + 5, y + 5, fill="OrangeRed2", outline="OrangeRed2")
-            fire_list.append(all_tiles_dict[x_coord][y_coord])
-        except:
-            pass
+        all_tiles_dict[x_coord][y_coord].set_on_fire(my_canvas, x, y, width_of_tile, height_of_tile)
+        fire_list.append(all_tiles_dict[x_coord][y_coord])
 
 root.bind("<Button-1>", on_click)
 
