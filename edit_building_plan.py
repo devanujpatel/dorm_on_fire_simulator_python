@@ -2,9 +2,13 @@ import threading
 import time
 from tkinter import *
 import pickle
+from tkinter import simpledialog, messagebox
 
+# from GUI_Tile import GUI_Tile
 from Rectangle import Rectangle
 from Tiles import Tile
+
+# from tkinter import messagebox, simpledialog
 
 divisions = 100
 all_tiles = {}
@@ -36,6 +40,18 @@ def save_to_dat_file():
 
     def enterName():
         global container
+
+        exits = []
+        # get all exit coordinates
+        for tile in all_tiles_list:
+            print(tile.color)
+            if tile.color == "maroon":
+                exits.append(tile)
+
+        print("given exits:")
+        print(exits)
+        for tile in all_tiles_list:
+            tile.calculate_costs(exits)
         name = e.get()
         print(name)
         new_map_frame.destroy()
@@ -58,12 +74,12 @@ def save_to_dat_file():
 # submit_button.pack()
 try:
     container.bind('<Control-s>', lambda event: save_to_dat_file())
-    #container.bind('<Command-s>', lambda event: save_to_dat_file())
+    container.bind('<Command-s>', lambda event: save_to_dat_file())
 except:
     pass
 
 my_canvas = Canvas(container, width=width, height=height)
-my_canvas.grid(row=1, column=0)  # pack(pady=20))
+my_canvas.grid(row = 1, column = 0) #pack(pady=20))
 
 rect_start_x = None
 rect_start_y = None
@@ -78,8 +94,8 @@ for i in range(divisions):
 #    for y in range(divisions):
 #        GUI_Tile(x, y, width, height, all_tiles)
 
-saveMessage = Label(container, text="To Save: COMMAND + S (Mac) or CTRL + S", width=50)
-saveMessage.grid(row=0, column=0)
+saveMessage = Label(container, text ="To Save: COMMAND + S (Mac) or CTRL + S", width = 50)
+saveMessage.grid(row = 0, column = 0)
 
 tempFlammable = False
 tempWalkable = False
@@ -150,8 +166,8 @@ def further_process(big_left_top_x, big_left_top_y, big_right_bottom_x, big_righ
 
     print(ending_x, ending_y)
 
-    for x_coord in range(int(starting_x), int(ending_x) + 1):
-        for y_coord in range(int(starting_y), int(ending_y) + 1):
+    for x_coord in range(int(starting_x), int(ending_x)):
+        for y_coord in range(int(starting_y), int(ending_y)):
             all_tiles[x_coord][y_coord] = Tile(x_coord, y_coord, tempWalkable, tempFlammable, False, False,
                                                tempColor,
                                                big_rectangle_id)
@@ -159,8 +175,11 @@ def further_process(big_left_top_x, big_left_top_y, big_right_bottom_x, big_righ
                                        tempColor,
                                        big_rectangle_id))
     big_rectangle_id += 1
+    rect_start_x = None
+    rect_start_y = None
+    rect_id = None
     print("done")
-    print(all_tiles)
+    print(all_tiles_list)
 
 
 def ask_the_three_questions(big_left_top_x, big_left_top_y, big_right_bottom_x, big_right_bottom_y, width_of_tile,
@@ -249,7 +268,7 @@ def on_drag(event):
 
 
 def on_release(event):
-    global rect_start_x, rect_start_y, big_rectangle_id
+    global rect_start_x, rect_start_y, big_rectangle_id, my_canvas
     # Get the coordinates of the selected region
     rect_end_x = my_canvas.canvasx(event.x)
     rect_end_y = my_canvas.canvasy(event.y)
@@ -276,24 +295,29 @@ def on_release(event):
     # print(left_bottom_x, left_bottom_y)
     # print(right_bottom_x, right_bottom_y)
 
+    x = left_top_x
+    y = left_top_y
     width_of_tile = width / divisions
     height_of_tile = height / divisions
 
-    big_left_top_x = (left_top_x // width_of_tile) * width_of_tile
-    big_left_top_y = (left_top_y // height_of_tile) * height_of_tile
+    big_left_top_x = (x // width_of_tile) * width_of_tile
+    big_left_top_y = (y // height_of_tile) * height_of_tile
 
-    big_right_bottom_x = ((right_bottom_x // width_of_tile) + 1) * width_of_tile
-    big_right_bottom_y = ((right_bottom_y // height_of_tile) + 1) * height_of_tile
+    x = right_bottom_x
+    y = right_bottom_y
+
+    big_right_bottom_x = ((x // width_of_tile)+1) * width_of_tile
+    big_right_bottom_y = ((y // height_of_tile)+1) * height_of_tile
 
     big_right_top_x, big_right_top_y, big_left_bottom_x, big_left_bottom_y = calculate_rt_and_lb_coordinates(
         big_left_top_x, big_left_top_y,
         big_right_bottom_x,
         big_right_bottom_y)
 
-    # print(big_left_top_x, big_left_top_y)
-    # print(big_right_top_x, big_right_top_y)
-    # print(big_left_bottom_x, big_left_bottom_y)
-    # print(big_right_bottom_x, big_right_bottom_y)
+    print(big_left_top_x, big_left_top_y)
+    print(big_right_top_x, big_right_top_y)
+    print(big_left_bottom_x, big_left_bottom_y)
+    print(big_right_bottom_x, big_right_bottom_y)
 
     new_rectangle = Rectangle(big_left_top_x, big_left_top_y, big_right_top_x, big_right_top_y, big_left_bottom_x,
                               big_left_bottom_y, big_right_bottom_x, big_right_bottom_y)
@@ -302,21 +326,47 @@ def on_release(event):
 
     if len(all_rectangles) == 0:
         pass
+        # all_rectangles.append(new_rectangle)
+        # my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
+        #                            big_right_bottom_y, fill="blue")
+        # ask_if_flammable()
     else:
         for rectangle in all_rectangles:
             if rectangles_overlap(rectangle.get_coords(), new_rectangle.get_coords()):
                 pass
                 # let the user know about the overlap
-                # print("invalid")
+                print("invalid")
                 flag = False
                 break
             else:
-                # print("valid")
-                pass
+                print("valid")
     if flag:
         all_rectangles.append(new_rectangle)
+        # my_canvas.create_rectangle(big_left_top_x, big_left_top_y, big_right_bottom_x,
+        #                           big_right_bottom_y, fill="blue")
+        # thread1 = thread(f"name{big_rectangle_id}", big_rectangle_id, big_left_top_x, big_left_top_y,
+        # big_right_bottom_x, big_right_bottom_y,
+        # width_of_tile, height_of_tile)
+        # thread1.start()
         ask_the_three_questions(big_left_top_x, big_left_top_y, big_right_bottom_x, big_right_bottom_y, width_of_tile,
                                 height_of_tile)
+        # big_left_top_x, big_left_top_y, big_right_bottom_x, big_right_bottom_y, width_of_tile, height_of_tile):
+
+        # tempFlammable = None
+        # tempWalkable = None
+        # def dialog(var):
+        #    root2 = Tk()
+        #    box = Frame(root2)
+        #    question = Label(box, text = "Is the material " +  var + "?")
+        #    def yes():
+        #        temp = True
+        #    def no():
+        #        temp = False
+
+        #    yButton = Button(box, text = "Yes", command = yes)
+        #    nButton = Button(box, text = "False", command = no)
+
+        # userInput = (simpledialog.askstring(title='Is material flammable', prompt = "Yes or No?"))
 
 
 def rectangles_overlap(rect1, rect2):
@@ -333,12 +383,10 @@ def rectangles_overlap(rect1, rect2):
     else:
         return True
 
-
 def calculate_rt_and_lb_coordinates(x1, y1, x2, y2):
     x3, y3 = x2, y1  # Right-top coordinate
     x4, y4 = x1, y2  # Left-bottom coordinate
     return x3, y3, x4, y4
-
 
 container.bind("<ButtonPress-1>", on_press)
 container.bind("<B1-Motion>", on_drag)
